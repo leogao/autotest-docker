@@ -21,7 +21,7 @@ class cgroups_base(SubSubtest):
         :path: the cgroup path of container
         :param content: the value need check.
         """
-        return os.path.join("%s-%s.scope" % (path, long_id), content)
+        return os.path.join("%s/%s" % (path, long_id), content)
 
     @staticmethod
     def read_cgroup(long_id, path, content):

@@ -115,7 +115,15 @@ class run_cgroup_parent_base(SubSubtest):
                 if m.group(2) == 'pids':
                     if DockerVersion().server.startswith("1.10"):
                         continue
-                self.failif_ne(m.group(3), path_exp, "cgroup path for %s:%s"
+                tmp_path_exp = path_exp
+                if m.group(2) == 'debug':
+                    tmp_path_exp = '/'
+                elif m.group(2) == '':
+                    tmp_path_exp = '/system.slice/docker.service'
+                elif m.group(2) in ['pids','devices','blkio','memory','name=systemd','cpu,cpuacct']:
+                    tmp_path_exp = '/system.slice/docker.service' + path_exp
+
+                self.failif_ne(m.group(3), tmp_path_exp, "cgroup path for %s:%s"
                                % (m.group(1), m.group(2)))
                 found_match = True
 
@@ -190,7 +198,7 @@ class run_cgroup_parent_path(run_cgroup_parent_base):
     def initialize(self):
         super(run_cgroup_parent_path, self).initialize()
         self._setup("{rand1}.slice")
-        self._expect(path="/{rand1}.slice/docker-{cid}.scope")
+        self._expect(path="/{rand1}.slice/{cid}")
 
 
 class run_cgroup_parent_path_with_hyphens(run_cgroup_parent_base):
@@ -201,5 +209,5 @@ class run_cgroup_parent_path_with_hyphens(run_cgroup_parent_base):
     def initialize(self):
         super(run_cgroup_parent_path_with_hyphens, self).initialize()
         self._setup("{rand1}-{rand2}.slice")
-        self._expect(path="/{rand1}.slice/{rand1}-{rand2}.slice"
-                     "/docker-{cid}.scope")
+        self._expect(path="/{rand1}-{rand2}.slice"
+                     "/{cid}")
