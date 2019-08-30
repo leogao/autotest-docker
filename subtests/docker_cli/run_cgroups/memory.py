@@ -29,7 +29,7 @@ class memory_base(cgroups_base):
         cgroup_memory = int(cgroup_memory)
         # Probably because of "-m 0". RHEL <= 7.2 reported 0x7FF...FFFF in
         # .../cgroup/.../memory.limit_in_bytes, RHEL >= 7.3 reports 0x...F000.
-        if cgroup_memory >= 0x7FFFFFFFFFFFF000:
+        if cgroup_memory >= 0x7FFFFFFFFFFFF000 or cgroup_memory >= 0x7FFFFFFFFFFF0000:
             cgroup_memory = 0
 
         if unit.upper() == 'K':
@@ -111,7 +111,7 @@ class memory_base(cgroups_base):
         super(memory_base, self).initialize()
         docker_containers = self.sub_stuff['docker_containers']
         image = DockerImage.full_name_from_defaults(self.config)
-        unit_list = ['', 'b', 'B', 'k', 'K', 'm', 'M', 'g', 'G']
+        unit_list = ['k', 'K', 'm', 'M', 'g', 'G']
         memory_list = []
         args = []
 
