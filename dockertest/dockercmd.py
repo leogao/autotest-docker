@@ -8,10 +8,10 @@ Frequently used docker CLI operations/data
 
 import time
 from autotest.client import utils
-from subtestbase import SubBase
-from xceptions import DockerNotImplementedError
-from xceptions import DockerExecError, DockerTestError
-from xceptions import DockerCommandError
+from .subtestbase import SubBase
+from .xceptions import DockerNotImplementedError
+from .xceptions import DockerExecError, DockerTestError
+from .xceptions import DockerCommandError
 
 
 class DockerCmdBase(object):
@@ -49,7 +49,7 @@ class DockerCmdBase(object):
         # Check for proper type of subargs
         if subargs is not None:
             if (not hasattr(subargs, '__iter__') or
-                    isinstance(subargs, (str, unicode))):
+                    isinstance(subargs, str)):
                 raise DockerTestError("Invalid argument type: %s,"
                                       " subargs must be an iterable of"
                                       " strings." % (subargs))
@@ -269,7 +269,7 @@ class DockerCmd(DockerCmdBase):  # pylint: disable=R0903
         """
 
         if not self.quiet:
-            if isinstance(stdin, basestring):   # stringg
+            if isinstance(stdin, str):   # stringg
                 str_stdin = "  <<< %r" % stdin
             elif isinstance(stdin, int):        # pipe
                 str_stdin = "  <<< PIPE: %s" % stdin
@@ -308,7 +308,7 @@ class AsyncDockerCmd(DockerCmdBase):
                                     "is very likely going to leak "
                                     "processes!!")
         if not self.quiet:
-            if isinstance(stdin, basestring):
+            if isinstance(stdin, str):
                 str_stdin = "  <<< %r" % stdin
             elif isinstance(stdin, int):
                 str_stdin = "  <<< PIPE: %s" % stdin

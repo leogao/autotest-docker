@@ -23,9 +23,9 @@ class TestEventParsing(TestCase):
                      "{t[2]} {cid}: (from {source}) die\n".format(**locals()))
         keys = ['datetime', 'identifier', 'operation', 'source']
         expect = [
-            (cid, dict(zip(keys, [DockerTime(t[0]), cid, 'create', source]))),
-            (cid, dict(zip(keys, [DockerTime(t[1]), cid, 'start',  source]))),
-            (cid, dict(zip(keys, [DockerTime(t[2]), cid, 'die',    source])))]
+            (cid, dict(list(zip(keys, [DockerTime(t[0]), cid, 'create', source])))),
+            (cid, dict(list(zip(keys, [DockerTime(t[1]), cid, 'start',  source])))),
+            (cid, dict(list(zip(keys, [DockerTime(t[2]), cid, 'die',    source]))))]
 
         actual = events.parse_events(event_log)
         self.maxDiff = None
@@ -94,12 +94,12 @@ class TestEventParsing(TestCase):
 """.format(**locals())
         keys = ['identifier', 'object', 'operation', 'source']
         expect = [
-            (cid, dict(zip(keys, [cid, 'container', 'create',       source]))),
-            (nid, dict(zip(keys, [nid, 'network',   'connect',      None]))),
-            (cid, dict(zip(keys, [cid, 'container', 'start',        source]))),
-            (cid, dict(zip(keys, [cid, 'container', 'die',          source]))),
-            (nid, dict(zip(keys, [nid, 'network',   'disconnect',   None]))),
-            (cid, dict(zip(keys, [cid, 'container', 'archive-path', None])))]
+            (cid, dict(list(zip(keys, [cid, 'container', 'create',       source])))),
+            (nid, dict(list(zip(keys, [nid, 'network',   'connect',      None])))),
+            (cid, dict(list(zip(keys, [cid, 'container', 'start',        source])))),
+            (cid, dict(list(zip(keys, [cid, 'container', 'die',          source])))),
+            (nid, dict(list(zip(keys, [nid, 'network',   'disconnect',   None])))),
+            (cid, dict(list(zip(keys, [cid, 'container', 'archive-path', None]))))]
         for i, e in enumerate(expect):
             e[1]['datetime'] = DockerTime(t[i])
 

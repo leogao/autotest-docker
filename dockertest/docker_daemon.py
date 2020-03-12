@@ -5,7 +5,7 @@ Docker Daemon interface helpers and utilities
 # Pylint runs from a different directory, it's fine to import this way
 # pylint: disable=W0403
 
-import httplib
+import http.client
 import logging
 import socket
 import json
@@ -64,7 +64,7 @@ class SocketClient(ClientBase):
     Connection to docker daemon through a unix socket
     """
 
-    class UHTTPConnection(httplib.HTTPConnection):
+    class UHTTPConnection(http.client.HTTPConnection):
 
         """
         Subclass of Python library HTTPConnection that uses a unix-domain
@@ -77,7 +77,7 @@ class SocketClient(ClientBase):
         # pylint: disable=R0903
 
         def __init__(self, path="/var/run/docker.sock"):
-            httplib.HTTPConnection.__init__(self, 'localhost')
+            http.client.HTTPConnection.__init__(self, 'localhost')
             self.path = path
 
         def connect(self):

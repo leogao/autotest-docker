@@ -9,7 +9,7 @@ import unittest
 class NetworkingTestBase(unittest.TestCase):
 
     def setUp(self):
-        import networking
+        from . import networking
         self.networking = networking
         self.CP = self.networking.ContainerPort
 

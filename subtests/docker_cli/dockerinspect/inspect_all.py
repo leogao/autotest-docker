@@ -49,7 +49,7 @@ class inspect_all(inspect_base):
         try:
             self._check_camel_case(info)
             self.loginfo("CamelCase test PASSED")
-        except ValueError, details:
+        except ValueError as details:
             self.failif(True, "%s\n%s" % (details, info))
 
     def _check_camel_case(self, info):
@@ -57,7 +57,7 @@ class inspect_all(inspect_base):
             for item in info:
                 self._check_camel_case(item)
         elif isinstance(info, dict):
-            for key, value in info.iteritems():
+            for key, value in info.items():
                 if not self.re_camel_case.match(key):
                     raise ValueError("Key '%s' is not CamelCase" % key)
                 self._check_camel_case(value)

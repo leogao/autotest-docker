@@ -21,7 +21,7 @@ Prerequisites
 """
 
 import time
-import httplib
+import http.client
 from autotest.client.shared import error
 from dockertest.subtest import SubSubtest
 from dockertest.images import DockerImages
@@ -38,7 +38,7 @@ class pull_base(SubSubtest):
 
     @staticmethod
     def check_registry(registry_addr):
-        conn = httplib.HTTPConnection(registry_addr)
+        conn = http.client.HTTPConnection(registry_addr)
         conn.request("GET", "/")
         r1 = conn.getresponse()
         if r1.status != 200:

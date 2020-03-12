@@ -58,7 +58,7 @@ setattr(mock('dockertest.xceptions'), 'DockerValueError', DockerValueError)
 class VersionTestBase(unittest.TestCase):
 
     def setUp(self):
-        import version
+        from . import version
         self.version = version
 
 
@@ -68,8 +68,8 @@ class VersionTest(VersionTestBase):
         for thing in (self.version.MAJOR, self.version.MINOR,
                       self.version.REVIS):
             self.assertTrue(isinstance(thing, int))
-        self.assertTrue(isinstance(self.version.FMTSTRING, (str, unicode)))
-        self.assertTrue(isinstance(self.version.STRING, (str, unicode)))
+        self.assertTrue(isinstance(self.version.FMTSTRING, str))
+        self.assertTrue(isinstance(self.version.STRING, str))
 
     def test_compare_str(self):
         major = self.version.MAJOR

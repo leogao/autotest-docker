@@ -6,14 +6,14 @@ Low-level documentation building details and dependencies
 # pylint: disable=W0403
 
 from collections import namedtuple
-from ConfigParser import RawConfigParser
-from StringIO import StringIO
+from configparser import RawConfigParser
+from io import StringIO
 import re
 import os.path
 import docutils
 import docutils.core
 import docutils.nodes
-from textwriter import TextWriter
+from .textwriter import TextWriter
 
 #: Base storage class for each config. doc item
 DocItemBase = namedtuple('DocItemBase',
@@ -440,7 +440,7 @@ class DocBase(object):
         # uniform key checking...
         try:
             return input_string % dct
-        except Exception, xcept:  # add some helpful details
+        except Exception as xcept:  # add some helpful details
             raise xcept.__class__("%s: fmt='%s' with dct='%s'"
                                   % (xcept.message, input_string, dct))
 
@@ -449,7 +449,7 @@ class DocBase(object):
         if self.sub_method is None:
             return {}
         subs = {}
-        for key, method in self.sub_method.iteritems():
+        for key, method in self.sub_method.items():
             subs[key] = method(key)
         return subs
 
@@ -459,7 +459,7 @@ class DocBase(object):
         if self.sub_method_args is None:
             return {}
         subs = {}
-        for method, args in self.sub_method_args.iteritems():
+        for method, args in self.sub_method_args.items():
             if args is None:
                 args = tuple()
             # reset_state() guarantees parameters match for **magic

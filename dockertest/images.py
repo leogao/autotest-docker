@@ -28,13 +28,13 @@ Note: As in other places, the terms 'repo' and 'image' are used
 import re
 from autotest.client import utils
 from autotest.client.shared import error
-from config import Config
-from config import none_if_empty
-from config import get_as_list
-from output import OutputGood, TextTable
-from subtestbase import SubBase
-from xceptions import DockerTestError, DockerCommandError
-from xceptions import DockerFullNameFormatError
+from .config import Config
+from .config import none_if_empty
+from .config import get_as_list
+from .output import OutputGood, TextTable
+from .subtestbase import SubBase
+from .xceptions import DockerTestError, DockerCommandError
+from .xceptions import DockerFullNameFormatError
 
 
 # Many attributes simply required here
@@ -177,8 +177,8 @@ class DockerImage(object):  # pylint: disable=R0902
         :return:  FQIN string, Fully Qualified Image Name
         """
 
-        component = zip(("%s/", "%s/", "%s", ":%s"),
-                        (repo_addr, user, repo, tag))
+        component = list(zip(("%s/", "%s/", "%s", ":%s"),
+                        (repo_addr, user, repo, tag)))
         return "".join([c % v for c, v in component if v is not None])
 
     @classmethod
@@ -391,7 +391,7 @@ class DockerImages(object):
             return utils.run(docker_image_cmd,
                              verbose=self.verbose,
                              timeout=timeout)
-        except CmdError, detail:
+        except CmdError as detail:
             raise DockerCommandError(detail.command, detail.result_obj,
                                      additional_text=detail.additional_text)
 
@@ -430,7 +430,7 @@ class DockerImages(object):
         all_images = self.list_imgs_full_name()
         if suffix:
             _name += suffix
-        for _ in xrange(1000):
+        for _ in range(1000):
             name = _name % utils.generate_random_string(length)
             if self.gen_lower_only:
                 name = name.lower()
@@ -634,7 +634,7 @@ class DockerImages(object):
         """
         if not hasattr(fqins, "__iter__"):
             raise TypeError("clean_all() called with non-iterable.")
-        if isinstance(fqins, basestring):
+        if isinstance(fqins, str):
             raise ValueError("clean_all() called with a string, "
                              "instead of an interable of strings.")
         preserve_fqins = self.subtest.config.get('preserve_fqins')

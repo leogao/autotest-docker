@@ -54,14 +54,14 @@ class workdir(subtest.Subtest):
 
     def run_once(self):
         super(workdir, self).run_once()
-        for name, _dir in self.stuff['good_dirs'].items():
+        for name, _dir in list(self.stuff['good_dirs'].items()):
             subargs = ['--workdir=%s' % _dir]
             subargs.append('--name=%s' % name)
             subargs.append(self.stuff['fin'])
             subargs.append('pwd')
             nfdc = DockerCmd(self, 'run', subargs)
             self.stuff['cmdresults'][name] = mustpass(nfdc.execute())
-        for name, _dir in self.stuff['bad_dirs'].items():
+        for name, _dir in list(self.stuff['bad_dirs'].items()):
             subargs = ['--workdir=%s' % _dir]
             subargs.append('--name=%s' % name)
             subargs.append(self.stuff['fin'])
@@ -71,13 +71,13 @@ class workdir(subtest.Subtest):
 
     def postprocess(self):
         super(workdir, self).postprocess()
-        for name, _dir in self.stuff['good_dirs'].items():
+        for name, _dir in list(self.stuff['good_dirs'].items()):
             _command = self.stuff['cmdresults'][name].command
             self.logdebug("Commands: %s" % _command)
             self.failif_ne(self.stuff['cmdresults'][name].stdout.strip(), _dir,
                            "failed to set workdir")
             self.logdebug("workdir %s set successful for container" % _dir)
-        for name, _dir in self.stuff['bad_dirs'].items():
+        for name, _dir in list(self.stuff['bad_dirs'].items()):
             _command = self.stuff['cmdresults'][name].command
             self.logdebug("Commands: %s" % _command)
             outputgood = OutputGood(self.stuff['cmdresults'][name],
@@ -92,9 +92,9 @@ class workdir(subtest.Subtest):
     def cleanup(self):
         super(workdir, self).cleanup()
         if self.config['remove_after_test']:
-            containers = [name for name in self.stuff['good_dirs'].keys()]
+            containers = [name for name in list(self.stuff['good_dirs'].keys())]
             dkrcmd = DockerCmd(self, 'rm', containers)
             dkrcmd.execute()
-            containers = [name for name in self.stuff['bad_dirs'].keys()]
+            containers = [name for name in list(self.stuff['bad_dirs'].keys())]
             dkrcmd = DockerCmd(self, 'rm', containers)
             dkrcmd.execute()

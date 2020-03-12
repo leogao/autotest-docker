@@ -58,7 +58,7 @@ class inspect_keys(inspect_base):
         try:
             # New in docker 1.9.1
             networks = json0['NetworkSettings']['Networks']
-            for network in networks.keys():
+            for network in list(networks.keys()):
                 # Child key names still need checking
                 dummy_key = 'RenamedForTesting_%s' % network
                 original_value = networks[network]
@@ -77,7 +77,7 @@ class inspect_keys(inspect_base):
         if isinstance(coll, list):
             return sum([self.get_keys(_) for _ in coll], [])
         if isinstance(coll, dict):
-            return sum([self.get_keys(_) for _ in coll.values()], coll.keys())
+            return sum([self.get_keys(_) for _ in list(coll.values())], list(coll.keys()))
         return []
 
     def assert_regex(self, keys, name):

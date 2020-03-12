@@ -66,7 +66,7 @@ class stop_base(SubSubtest):
         container_cmd = self.sub_stuff['container_cmd']
         self.sub_stuff['stop_results'] = self.sub_stuff['stop_cmd'].execute()
         # Wait for container exit
-        for _ in xrange(50):
+        for _ in range(50):
             if container_cmd.done:
                 break
             time.sleep(0.1)

@@ -14,7 +14,7 @@ import shutil
 class ContainersTestBase(unittest.TestCase):
 
     def setUp(self):
-        import containers
+        from . import containers
         self.containers = containers
         self.DC = self.containers.DockerContainer
 
@@ -129,7 +129,7 @@ def mock(mod_path):
 class FakeCmdResult(object):
 
     def __init__(self, **dargs):
-        for key, val in dargs.items():
+        for key, val in list(dargs.items()):
             setattr(self, key, val)
 
 RUN_CACHE = []
@@ -198,7 +198,7 @@ setattr(mock('autotest.client.shared.error'), 'AutotestError', Exception)
 setattr(mock('autotest.client.shared.version'), 'get_version',
         lambda: version.AUTOTESTVERSION)
 
-import version
+from . import version
 
 
 class DockerContainersTestBase(ContainersTestBase):
@@ -219,7 +219,7 @@ class DockerContainersTestBase(ContainersTestBase):
         cfgfile.close()
         # ConfigDict forbids writing
         cfgsect = self.config.ConfigSection(None, cfgsection)
-        for key, val in cfgdict.items():
+        for key, val in list(cfgdict.items()):
             cfgsect.set(key, val)
         cfgsect.set('__example__', '')
         cfgsect.write(cfgfile)
@@ -263,8 +263,8 @@ class DockerContainersTestBase(ContainersTestBase):
 
     def setUp(self):
         super(DockerContainersTestBase, self).setUp()
-        import config
-        import subtest
+        from . import config
+        from . import subtest
         self.config = config
         self.subtest = subtest
         self.config.CONFIGDEFAULT = tempfile.mkdtemp(self.__class__.__name__)
@@ -304,7 +304,7 @@ class DockerContainersTest(DockerContainersTestBase):
         self.assertEqual(cl[0].ports, "")
 
     def test_ports(self):
-        from networking import ContainerPort
+        from .networking import ContainerPort
         dcc = self.containers.DockerContainers(self.fake_subtest)
         long_id = ("ef0fe72271778aefcb5cf6015f30067fbe"
                    "01f05996a123037f65db0b82795915")

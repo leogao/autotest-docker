@@ -124,7 +124,7 @@ class tag_base(SubSubtest):
                 self.logdebug("Removing image %s", image.full_name)
                 try:
                     self.dkrimg.remove_image_by_full_name(image.full_name)
-                except error.CmdError, exc:
+                except error.CmdError as exc:
                     err = exc.result_obj.stderr
                     if "tagged in multiple repositories" not in err:
                         raise

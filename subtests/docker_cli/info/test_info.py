@@ -43,7 +43,7 @@ class TestVerifyPoolName(TestCase):
         with patch('autotest.client.utils.run', Mock(return_value=mockrun)):
             try:
                 info.info.verify_pool_name(mockinfo, pool_name)
-            except Exception, e:          # pylint: disable=broad-except
+            except Exception as e:          # pylint: disable=broad-except
                 if expected_exception:
                     # exception message is a more specific check than type
                     self.assertEqual(e.message, expected_exception)

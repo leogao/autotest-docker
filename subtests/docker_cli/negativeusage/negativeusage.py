@@ -147,7 +147,7 @@ class Base(subtest.SubSubtest):
                 # Catch misspellings / unsupported sutstitution keywords
                 try:
                     value = self.config[key] % self.sub_stuff
-                except KeyError, xcpt:
+                except KeyError as xcpt:
                     raise KeyError("Configuration error with option '%s' value"
                                    "in sub-subtest %s: Invalid substitution "
                                    "key '%s'" % (key, self.config_section,

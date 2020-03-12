@@ -104,9 +104,9 @@ class DockerTime(datetime.datetime):  # pylint: disable=R0903
             raise ValueError("Malformed date time string %s" % isostr)
         # Convert any strings into integers
         for index, value in enumerate(values):
-            if isinstance(value, basestring):
+            if isinstance(value, str):
                 values[index] = int(value)
-        dargs = dict(zip(tuple(keys), tuple(values)))
+        dargs = dict(list(zip(tuple(keys), tuple(values))))
         return super(DockerTime, cls).__new__(cls, **dargs)
 
     def __repr__(self):

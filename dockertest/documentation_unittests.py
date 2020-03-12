@@ -13,8 +13,8 @@ import os.path
 class DocumentationTestBase(unittest.TestCase):
 
     def setUp(self):
-        import docdeps
-        import documentation
+        from . import docdeps
+        from . import documentation
         self.docdeps = docdeps
         self.documentation = documentation
         self.tmpdir = tempfile.mkdtemp(self.__class__.__name__)
@@ -67,7 +67,7 @@ class TestDocItem(DocumentationTestBase):
     def test_fields_asdict(self):
         keys = ('subthing', 'option', 'desc', 'value')
         values = (None, None, None, None)
-        dargs = dict(zip(keys, values))
+        dargs = dict(list(zip(keys, values)))
         foobar = self.DocItem(**dargs)
         self.assertEqual(foobar.fields, keys)
         self.assertEqual(foobar.asdict(), dargs)
@@ -269,7 +269,7 @@ class TestDocBase(DocumentationTestBase):
         # This will be a different "self"
         def bar(_self_, key):
             _self_.called_bar = True
-            return unicode('bar')
+            return str('bar')
         try:
             setattr(self.docbase, 'bar', bar)
             setattr(self.docbase, 'called_foo', False)
@@ -621,7 +621,7 @@ class TestSubtestDocs(DocumentationTestBase):
         self.stds = self.documentation.SubtestDocs
         self.stds.default_base_path = self.tmpdir
         self.stds.stdc.default_base_path = self.tmpdir
-        for name, content in self.subtests_docstrings.items():
+        for name, content in list(self.subtests_docstrings.items()):
             subtest_fullpath = self.subtest_fullpath(name)
             subtest_dir = os.path.dirname(subtest_fullpath)
             os.makedirs(subtest_dir)

@@ -11,10 +11,10 @@ import logging
 import os.path
 import sys
 import traceback
-from xceptions import DockerTestFail
-from xceptions import DockerTestNAError
-from config import CONFIGCUSTOMS, get_as_list
-from environment import docker_rpm
+from .xceptions import DockerTestFail
+from .xceptions import DockerTestNAError
+from .config import CONFIGCUSTOMS, get_as_list
+from .environment import docker_rpm
 
 
 def known_failures_file():
@@ -44,7 +44,7 @@ def known_failures():
     known = {}
     try:
         known_failures_fh = open(known_failures_path, 'r')
-    except IOError, excpt:
+    except IOError as excpt:
         SubBase.logwarning("Skipping known_failure check: %s" % excpt)
         return known
 
@@ -125,7 +125,7 @@ class SubBase(object):
             for nco in get_as_list(not_customized):
                 self.logdebug("WARNING: %s" % nco)
         msg = "%s configuration:\n" % self.__class__.__name__
-        for key, value in self.config.items():
+        for key, value in list(self.config.items()):
             if key == '__example__' or key.startswith('envcheck'):
                 continue
             msg += '\t\t%s = "%s"\n' % (key, value)
@@ -276,7 +276,7 @@ class SubBase(object):
         # actual or expected is the empty string or a string with spaces.
         # But if both are numeric types the quotes distract, so remove them.
         arg = "'{}'"
-        if all(isinstance(x, (int, long, float)) for x in [actual, expected]):
+        if all(isinstance(x, (int, float)) for x in [actual, expected]):
             arg = "{}"
         spec = "{}: expected " + arg + "; got " + arg
         raise xcept(spec.format(reason, expected, actual))
@@ -323,7 +323,7 @@ class SubBase(object):
                 if 'Enterprise' not in rhrel.read():
                     raise xcept("Test only intended for a Red Hat "
                                 "Enterprise Linux System.")
-        except IOError, anotherone:
+        except IOError as anotherone:
             raise xcept("Is this a Red Hat Enterprise system?  "
                         "Error reading %s: %s."
                         % (cls.redhat_release_filepath,

@@ -52,8 +52,8 @@ source_encoding = 'utf-8-sig'
 master_doc = 'index'
 
 #: General information about the project.
-project = u'Docker Autotest'
-copyright = u'2014, Chris Evich'
+project = 'Docker Autotest'
+copyright = '2014, Chris Evich'
 
 #: The full version, including alpha/beta/rc tags.
 release = '.'.join(version.split('.')[0:2])
@@ -196,8 +196,8 @@ latex_elements = {
 #: Grouping the document tree into LaTeX files. List of tuples
 #: (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ('index', 'DockerAutotest.tex', u'Docker Autotest Documentation',
-     u'Chris Evich', 'manual'),
+    ('index', 'DockerAutotest.tex', 'Docker Autotest Documentation',
+     'Chris Evich', 'manual'),
 ]
 
 #: The name of an image file (relative to this directory) to place at the top of
@@ -226,8 +226,8 @@ latex_domain_indices = True
 #: One entry per manual page. List of tuples
 #: (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'dockerautotest', u'Docker Autotest Documentation',
-     [u'Chris Evich'], 1)
+    ('index', 'dockerautotest', 'Docker Autotest Documentation',
+     ['Chris Evich'], 1)
 ]
 
 #: If true, show URL addresses after external links.
@@ -240,8 +240,8 @@ man_show_urls = False
 #: (source start file, target name, title, author,
 #: dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'DockerAutotest', u'Docker Autotest Documentation',
-     u'Chris Evich', 'DockerAutotest', 'One line description of project.',
+    ('index', 'DockerAutotest', 'Docker Autotest Documentation',
+     'Chris Evich', 'DockerAutotest', 'One line description of project.',
      'Miscellaneous'),
 ]
 
@@ -266,7 +266,7 @@ def mock(mod_path):
     child_name = name_list.pop()
     child_mod = sys.modules.get(mod_path, types.ModuleType(child_name))
     if len(name_list) == 0:  # child_name is left-most basic module
-        if not sys.modules.has_key(child_name):
+        if child_name not in sys.modules:
             sys.modules[child_name] = child_mod
         return sys.modules[child_name]
     else:

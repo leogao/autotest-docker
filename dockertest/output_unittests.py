@@ -124,7 +124,7 @@ class BaseInterfaceTest(unittest.TestCase):
 class DockerVersionTest(unittest.TestCase):
 
     def setUp(self):
-        import output
+        from . import output
         self.output = output
 
     def test_client(self):
@@ -183,7 +183,7 @@ class ColumnRangesTest(unittest.TestCase):
              'NAMES')
 
     def setUp(self):
-        from output import ColumnRanges
+        from .output import ColumnRanges
         self.ColumnRanges = ColumnRanges
 
     def test_init(self):
@@ -198,7 +198,7 @@ class ColumnRangesTest(unittest.TestCase):
         for c in ('CONTAINER ID', 'IMAGE', (0, 20), 'COMMAND', (20, 40),
                   'CREATED', 'STATUS', (60, 80), 'PORTS', 'NAMES'):
             self.assertTrue(c in tc)
-        for n in xrange(1, 120):
+        for n in range(1, 120):
             self.assertTrue(n not in tc)
             self.assertFalse(n in tc)
 
@@ -227,7 +227,7 @@ class TextTableTest(unittest.TestCase):
     ]
 
     def setUp(self):
-        from output import TextTable
+        from .output import TextTable
         self.TT = TextTable
 
     def test_single_init(self):
@@ -259,7 +259,7 @@ fedora                        20                  58394af373423902a1b97f209a31e3
 fedora                        heisenbug           58394af373423902a1b97f209a31e3777932d9321ef10e64feaaa7b4df609cf9   5 weeks ago         385.5 MB
 fedora                        latest              58394af373423902a1b97f209a31e3777932d9321ef10e64feaaa7b4df609cf9   5 weeks ago         385.5 MB
 """)
-        self.assertEqual(tt.columnranges.values(),
+        self.assertEqual(list(tt.columnranges.values()),
                          ['REPOSITORY', 'TAG', 'IMAGE ID', 'CREATED',
                           'VIRTUAL SIZE'])
         sr = tt.search('IMAGE ID', ('58394af373423902a1b97f209a31e3777932'
@@ -282,7 +282,7 @@ fedora                        20                  sha256:58394af373423902a1b97f2
 fedora                        heisenbug           sha256:58394af373423902a1b97f209a31e3777932d9321ef10e64feaaa7b4df609cf9   5 weeks ago         385.5 MB
 fedora                        latest              sha256:58394af373423902a1b97f209a31e3777932d9321ef10e64feaaa7b4df609cf9   5 weeks ago         385.5 MB
 """)
-        self.assertEqual(tt.columnranges.values(),
+        self.assertEqual(list(tt.columnranges.values()),
                          ['REPOSITORY', 'TAG', 'IMAGE ID', 'CREATED',
                           'SIZE'])
         sr = tt.search('IMAGE ID', ('sha256:58394af373423902a1b97f209a31e3777932'
@@ -325,7 +325,7 @@ class WaitForOutput(unittest.TestCase):
         self.old_sleep = time.sleep
         setattr(mock('time'), 'time', self.get_time)
         setattr(mock('time'), 'sleep', self.sleep)
-        import output
+        from . import output
         self.output = output
         self.gtime = self.timegen()
 
@@ -336,13 +336,13 @@ class WaitForOutput(unittest.TestCase):
     def test_wait_for_output(self):
         pattern = r"exp_out"
         ogen = self.outgenerator(2, pattern)
-        out = lambda: ogen.next()
+        out = lambda: next(ogen)
         self.assertEqual(self.output.wait_for_output(out, pattern, 8, 1),
                          True)
 
         t = time.time()
         ogen = self.outgenerator(10, pattern)
-        out = lambda: ogen.next()
+        out = lambda: next(ogen)
         self.assertEqual(self.output.wait_for_output(out, pattern, 2, 1),
                          False)
         e = time.time()
@@ -355,14 +355,14 @@ class WaitForOutput(unittest.TestCase):
         raise_t = t + raise_time
         out = ""
         while time.time() < raise_t:
-            for _ in xrange(30):
+            for _ in range(30):
                 out += chr(random.randint(32, 100))
             yield out
         out += expected_out
         yield out
 
         while 1:
-            for _ in xrange(30):
+            for _ in range(30):
                 out += chr(random.randint(32, 100))
             yield out
 
@@ -374,7 +374,7 @@ class WaitForOutput(unittest.TestCase):
             yield t
 
     def get_time(self):
-        return self.gtime.next()
+        return next(self.gtime)
 
     @staticmethod
     def sleep(_):
@@ -384,7 +384,7 @@ class WaitForOutput(unittest.TestCase):
 class TestDtFromIso(unittest.TestCase):
 
     def setUp(self):
-        import output
+        from . import output
         self.utc = output.DockerTime.UTC()
         self.dockertime = output.DockerTime
         from datetime import datetime

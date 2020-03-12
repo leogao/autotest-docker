@@ -131,7 +131,7 @@ class stress(kill_base):
             self.sub_stuff['kill_results'].append(kill_cmds[1].execute())
         else:   # kill the container process
             os.kill(container_cmd.process_id, 9)
-        for _ in xrange(50):
+        for _ in range(50):
             if container_cmd.done:
                 break
             time.sleep(0.1)

@@ -55,21 +55,21 @@ class spam(SubSubtest):
         howmany = self.config['n_env']
         keyfmt = "%s%%x" % self.KEYPFX
         valfmt = "%s%%x" % self.VALPFX
-        keyiter = (keyfmt % x for x in xrange(0, howmany))
-        valiter = (valfmt % x for x in xrange(howmany, 0, -1))
-        return dict(zip(keyiter, valiter))
+        keyiter = (keyfmt % x for x in range(0, howmany))
+        valiter = (valfmt % x for x in range(howmany, 0, -1))
+        return dict(list(zip(keyiter, valiter)))
 
     def save_testdata(self):
         self.sub_stuff['output'] = os.path.join(self.tmpdir, 'env.output')
         resultdir = self.parent_subtest.resultsdir
         inputcopy = os.path.join(resultdir, "env.input")
         with open(inputcopy, 'wb') as inpf:
-            for key, value in self.sub_stuff['envd'].iteritems():
+            for key, value in self.sub_stuff['envd'].items():
                 inpf.write("%s=%s\n" % (key, value))
 
     def initialize_cmdline(self):
         subargs = ['--rm', '-v', '%s:/x:Z' % self.tmpdir]
-        for key, value in self.sub_stuff['envd'].iteritems():
+        for key, value in self.sub_stuff['envd'].items():
             subargs.append("-e")
             subargs.append("%s=%s" % (key, value))
         subargs.append(DockerImages(self).default_image)
@@ -105,7 +105,7 @@ class spam(SubSubtest):
 
     def validate_testdata(self, expected, actual):
         # Verify what's expected is valid inside container
-        iterator = expected.iteritems()
+        iterator = iter(expected.items())
         compareto = actual
         name = "output"
         # More helpful to debugging if done this way

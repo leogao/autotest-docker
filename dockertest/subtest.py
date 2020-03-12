@@ -16,17 +16,17 @@ import os.path
 import imp
 import sys
 import copy
-from ConfigParser import Error
+from configparser import Error
 from autotest.client.shared.error import TestError, TestNAError
 from autotest.client.shared.version import get_version
 from autotest.client import test
-import version
-import config
-import subtestbase
-from xceptions import DockerTestFail
-from xceptions import DockerTestNAError
-from xceptions import DockerTestError
-from xceptions import DockerSubSubtestNAError
+from . import version
+from . import config
+from . import subtestbase
+from .xceptions import DockerTestFail
+from .xceptions import DockerTestNAError
+from .xceptions import DockerTestError
+from .xceptions import DockerSubSubtestNAError
 from dockertest.environment import selinux_is_enforcing
 import dockertest.docker_daemon as docker_daemon
 
@@ -169,7 +169,7 @@ class Subtest(subtestbase.SubBase, test.test):
                 cache_section = config.ConfigDict(section)
                 cache_section.read(open(fullpath, 'rb'))
                 # The class instance isn't needed, only store the data
-                cache = dict(cache_section.items())
+                cache = dict(list(cache_section.items()))
             except (IOError, OSError, Error):
                 self.logwarning("Failed to load reference '%s' and/or "
                                 "its '[%s]' section.", fullpath, section)
@@ -181,7 +181,7 @@ class Subtest(subtestbase.SubBase, test.test):
         if not cache:
             self.logdebug("No reference control.ini found, returning None")
             return None
-        return dict(cache.items())  # return a copy
+        return dict(list(cache.items()))  # return a copy
 
     @property
     def control_config(self):
@@ -278,7 +278,7 @@ class SubSubtest(subtestbase.SubBase):
         # don't redefine the module
         _config = copy.deepcopy(parent_config)  # a copy
         # global defaults mixed in, even if overridden in parent :(
-        for key, val in subsubtest_config.items():
+        for key, val in list(subsubtest_config.items()):
             if key == 'subsubtests':
                 continue  # only applicable to parent
             if key == '__example__':
@@ -430,7 +430,7 @@ class SubSubtestCaller(Subtest):
         # logging additional details before raising
         # more general exception.
         # pylint: disable=W0703
-        except Exception, detail:
+        except Exception as detail:
             self.logtraceback(name,
                               self.exception_info["exc_info"],
                               self.exception_info["error_source"],
@@ -444,7 +444,7 @@ class SubSubtestCaller(Subtest):
                 self.logwarning("Treating TestNAError as PASS")
                 self.final_subsubtests.add(name)
             # cleanup() will still be called before this propagates
-            raise exc_info[0], exc_info[1], exc_info[2]
+            raise exc_info[0](exc_info[1]).with_traceback(exc_info[2])
 
     def run_all_stages(self, name, subsubtest):
         """
@@ -471,7 +471,7 @@ class SubSubtestCaller(Subtest):
             finally:
                 try:
                     subsubtest.cleanup()
-                except Exception, detail:
+                except Exception as detail:
                     self.logtraceback(name,
                                       sys.exc_info(),
                                       "Cleanup",
@@ -525,7 +525,7 @@ class SubSubtestCaller(Subtest):
         # pylint: disable=W0703
         except Exception:
             # Log problem, don't add to run_subsubtests
-            self.exception_info["error_source"] = method.func_name
+            self.exception_info["error_source"] = method.__name__
             self.exception_info["exc_info"] = sys.exc_info()
             raise
 
@@ -638,7 +638,7 @@ class SubSubtestCaller(Subtest):
             # Create instance, pass this subtest subclass as only parameter
             try:
                 return cls(self)
-            except DockerSubSubtestNAError, xcpt:
+            except DockerSubSubtestNAError as xcpt:
                 self.logwarning(str(xcpt))
                 # return None
         # Load failure will be caught and loged later
@@ -690,7 +690,7 @@ class SubSubtestCallerSimultaneous(SubSubtestCaller):
                 # Catching general exception b/c it will be logged and
                 # structure must allow cleanup() method to run.
                 # pylint: disable=W0703
-                except Exception, detail:
+                except Exception as detail:
                     # Log problem, don't add to run_subsubtests
                     self.logtraceback(name, sys.exc_info(), "initialize",
                                       detail)
@@ -702,7 +702,7 @@ class SubSubtestCallerSimultaneous(SubSubtestCaller):
         # DO NOT CALL superclass run_once(); this variation works
         # completely differently!
         self.log_step_msg('run_once')
-        for name, subsubtest in self.run_subsubtests.items():
+        for name, subsubtest in list(self.run_subsubtests.items()):
             try:
                 subsubtest.run_once()
                 # Allow postprocess()
@@ -711,7 +711,7 @@ class SubSubtestCallerSimultaneous(SubSubtestCaller):
             # step must be guaranteed to run.  Exception
             # details will be logged instead.
             # pylint: disable=W0703
-            except Exception, detail:
+            except Exception as detail:
                 # Log problem, don't add to post_subsubtests
                 self.logtraceback(name, sys.exc_info(), "run_once", detail)
 
@@ -721,7 +721,7 @@ class SubSubtestCallerSimultaneous(SubSubtestCaller):
         self.log_step_msg('postprocess')
         start_subsubtests = set(self.start_subsubtests.keys())
         final_subsubtests = set()
-        for name, subsubtest in self.post_subsubtests.items():
+        for name, subsubtest in list(self.post_subsubtests.items()):
             try:
                 subsubtest.postprocess()
                 # Will form "passed" set
@@ -729,7 +729,7 @@ class SubSubtestCallerSimultaneous(SubSubtestCaller):
             # Catching general exception b/c it will be logged and
             # structure must allow cleanup() method to run.
             # pylint: disable=W0703
-            except Exception, detail:
+            except Exception as detail:
                 # Forms "failed" set by exclusion from final_subsubtests
                 self.logtraceback(name, sys.exc_info(), "postprocess",
                                   detail)
@@ -741,14 +741,14 @@ class SubSubtestCallerSimultaneous(SubSubtestCaller):
         super(SubSubtestCallerSimultaneous, self).cleanup()
         self.log_step_msg('cleanup')
         cleanup_failures = set()  # just for logging purposes
-        for name, subsubtest in self.start_subsubtests.items():
+        for name, subsubtest in list(self.start_subsubtests.items()):
             try:
                 subsubtest.cleanup()
             # Catching general exception to allow logging
             # logging additional details before raising
             # more general exception.
             # pylint: disable=W0703
-            except Exception, detail:
+            except Exception as detail:
                 cleanup_failures.add(name)
                 self.logtraceback(name, sys.exc_info(), "cleanup",
                                   detail)

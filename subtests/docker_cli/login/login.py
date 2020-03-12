@@ -17,7 +17,7 @@ Operational Summary
 import os
 from base64 import b64encode
 import json
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import time
 from autotest.client import utils
 from dockertest.containers import DockerContainers
@@ -144,11 +144,11 @@ class login_base(SubSubtest):
         end_time = time.time() + timeout
         while time.time() <= end_time:
             try:
-                urllib2.urlopen(url, cafile="domain.crt")
-            except urllib2.HTTPError as e:
+                urllib.request.urlopen(url, cafile="domain.crt")
+            except urllib.error.HTTPError as e:
                 if e.reason == 'Unauthorized':
                     return
-            except urllib2.URLError as e:
+            except urllib.error.URLError as e:
                 # Likely case: registry is still spinning up. Keep waiting.
                 self.logdebug("_wait_for_registry_ready(): %s", str(e))
             time.sleep(0.5)

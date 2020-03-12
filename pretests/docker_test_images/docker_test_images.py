@@ -67,7 +67,7 @@ class docker_test_images(SubSubtestCaller):
             # These /are/ the customized defaults, don't re-default them
             cfgsec = ConfigSection(dict(), 'DEFAULTS')
             # config.merge_write() can't work with DEFAULTS
-            for key, value in Config.defaults_.items():
+            for key, value in list(Config.defaults_.items()):
                 cfgsec.set(key, value)
             # This may not exist
             if cfgsec.has_option('preserve_fqins'):
@@ -113,7 +113,7 @@ class builder(SubSubtest):
         subopts = get_as_list(self.config.get('build_opts_csv', []))
         stuff = self.parent_subtest.stuff
         # Someday we might support building more than one
-        for name, dockerfile in stuff['build'].items():
+        for name, dockerfile in list(stuff['build'].items()):
             this_subopts = subopts + ['-t', name, dockerfile]
             mustpass(DockerCmd(self, 'build', this_subopts).execute())
-            stuff['fqins'] += stuff['build'].keys()
+            stuff['fqins'] += list(stuff['build'].keys())

@@ -61,7 +61,7 @@ class diff_base(SubSubtest):
         files_changed = self.config['files_changed'].split(',')
         odds = files_changed[1::2]
         even = files_changed[::2]
-        expected = zip(odds, even)
+        expected = list(zip(odds, even))
         for key, value in expected:
             self.failif(key not in diffmap,
                         "Change to file: %s not detected." % (key))

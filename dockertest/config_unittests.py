@@ -57,7 +57,7 @@ setattr(mock('xceptions'), 'DockerIOError', DockerKeyError)
 class ConfigTestBase(unittest.TestCase):
 
     def setUp(self):
-        import config
+        from . import config
         self.config = config
         self.config.CONFIGDEFAULT = tempfile.mkdtemp(self.__class__.__name__)
         self.config.CONFIGCUSTOMS = tempfile.mkdtemp(self.__class__.__name__)

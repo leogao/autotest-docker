@@ -106,9 +106,9 @@ class run_dns(subtest.Subtest):
         self.failif(not self._ieq(searches[-1], search), "Search was set to %s"
                     " but is %s instead" % (search, searches[-1]))
         # Multiple dnss and searches
-        dns = [self.generate_ipaddr(dnss) for _ in xrange(5)]
+        dns = [self.generate_ipaddr(dnss) for _ in range(5)]
         search = [self.generate_search("example.", searches)
-                  for _ in xrange(5)]
+                  for _ in range(5)]
         self._execute_and_record(dns, search, dnss, searches)
         self.failif(not self._ieq(dnss[-1], dns), "Dns was set to %s but in "
                     "/etc/resolv.conf it's %s" % (dns, dnss[-1]))
@@ -125,8 +125,8 @@ class run_dns(subtest.Subtest):
 
     def generate_ipaddr(self, mask=None):
         """ Generate ip addres in range <0-255> not present in mask """
-        for _ in xrange(1000):
-            addr = '.'.join((str(random.randrange(256)) for _ in xrange(4)))
+        for _ in range(1000):
+            addr = '.'.join((str(random.randrange(256)) for _ in range(4)))
             if mask and addr in itertools.chain.from_iterable(mask):
                 continue
             break
@@ -137,7 +137,7 @@ class run_dns(subtest.Subtest):
 
     def generate_search(self, prefix, mask=None):
         """ Generate string not present in mask """
-        for _ in xrange(1000):
+        for _ in range(1000):
             search = prefix + utils.generate_random_string(6)
             if mask and search in itertools.chain.from_iterable(mask):
                 continue

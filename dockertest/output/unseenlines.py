@@ -123,7 +123,7 @@ class UnseenLines(object):
         """
         if idx <= self.idx:
             if self.log_fn is not None and callable(self.log_fn):
-                for old_idx in xrange(self.idx, idx, -1):
+                for old_idx in range(self.idx, idx, -1):
                     self.log_fn("(Undoing) %s"
                                 % self.lines[old_idx])
             self.idx = idx
@@ -165,7 +165,7 @@ class UnseenlineMatchTimeout(RuntimeError):
         return (self.strfmt
                 % (peeking, context, self.regex.pattern, self.timeout))
 
-    def __nonzero__(self):
+    def __bool__(self):
         # Regex did not match w/in timeout
         return False
 
@@ -222,7 +222,7 @@ class UnseenlineMatch(object):
         self.timeout = timeout
         self.otherone = otherone
 
-    def __nonzero__(self):
+    def __bool__(self):
         return self.unseenlines is not None
 
     def __str__(self):
@@ -323,7 +323,7 @@ class NoUnseenlineMatch(UnseenlineMatch):
         try:
             return super(NoUnseenlineMatch, cls).__new__(cls, regex,
                                                          unseenlines, timeout)
-        except UnseenlineMatchTimeout, xcept:
+        except UnseenlineMatchTimeout as xcept:
             # Restore unseenlines context
             xcept.unseenlines.undo(xcept.start_context)
             raise

@@ -215,5 +215,5 @@ class with_unused_containers(two_images_with_parents):
 
     def initialize(self):
         super(with_unused_containers, self).initialize()
-        for _ in xrange(10):
+        for _ in range(10):
             self._init_container("background", None, [], "sh -c exit")

@@ -55,7 +55,7 @@ class FakeCmdResult(object):    # pylint: disable=R0903
 
     def __init__(self, *args, **dargs):
         self.sp = FakePopen()
-        for key, val in dargs.items():
+        for key, val in list(dargs.items()):
             setattr(self, key, val)
 
     def __str__(self):
@@ -121,7 +121,7 @@ mock('autotest.client.shared.job')
 mock('autotest.client.shared.utils')
 mock('autotest.client.job')
 
-import version
+from . import version
 
 
 class DockerCmdTestBase(unittest.TestCase):
@@ -139,7 +139,7 @@ class DockerCmdTestBase(unittest.TestCase):
         cfgfile.close()
         # ConfigDict forbids writing
         cfgsect = self.config.ConfigSection(None, cfgsection)
-        for key, val in cfgdict.items():
+        for key, val in list(cfgdict.items()):
             cfgsect.set(key, val)
         cfgsect.set('__example__', '')
         cfgsect.write(cfgfile)

@@ -14,9 +14,9 @@ is assumed.
 
 import ast
 import os.path
-from docdeps import ConfigINIParser
-from docdeps import SummaryVisitor
-from docdeps import DocBase
+from .docdeps import ConfigINIParser
+from .docdeps import SummaryVisitor
+from .docdeps import DocBase
 
 
 class DefaultDoc(DocBase):
@@ -82,7 +82,7 @@ class DefaultDoc(DocBase):
         """Returns docitem for Default option, None if it doesn't exist"""
         if self._default_map is None:
             options = [docitem.option for docitem in self.docitems]
-            self._default_map = dict(zip(options, self.docitems))
+            self._default_map = dict(list(zip(options, self.docitems)))
         return self._default_map.get(option, None)
 
 
@@ -495,7 +495,7 @@ class SubtestDocs(DocBase):
         Any test names referenced in ``exclude`` will be skipped"""
         # list of tuples for initializing dictionary
         lot = []
-        for name, filename in self.names_filenames.iteritems():
+        for name, filename in self.names_filenames.items():
             if name not in self.exclude:
                 lot.append((name, self.stdc(filename)))
         # Excluded names not present in ``fmt`` will be ignored

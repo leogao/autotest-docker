@@ -200,7 +200,7 @@ class events(Subtest):
         # These will be removed as expected events for cid are identified
         leftovers = self.config['expect_events'].strip().split(',')
         self.stuff['leftovers'] = leftovers
-        for key, value in self.stuff.items():
+        for key, value in list(self.stuff.items()):
             self.logdebug("init %s = %s", key, value)
 
     def run_once(self):

@@ -152,7 +152,7 @@ class kill_base(subtest.SubSubtest):
         if not self.config.get('signals_sequence'):
             sequence = []
             signals = [int(sig) for sig in self.config['kill_signals'].split()]
-            signals = range(*signals)
+            signals = list(range(*signals))
             skipped_signals = (int(_) for _ in
                                self.config.get('skip_signals', "").split())
             for skipped_signal in skipped_signals:
@@ -160,7 +160,7 @@ class kill_base(subtest.SubSubtest):
                     signals.remove(skipped_signal)
                 except ValueError:
                     pass
-            for _ in xrange(self.config['no_iterations']):
+            for _ in range(self.config['no_iterations']):
                 if (map_signals is True or (map_signals is None and
                                             random.choice((True, False)))):
                     sequence.append("M")    # mapped signal (USR1)
@@ -279,7 +279,7 @@ class kill_check_base(kill_base):
         """
         Destroy the container with -9, check that it died in 5s
         """
-        for _ in xrange(50):    # wait for command to finish
+        for _ in range(50):    # wait for command to finish
             if container_cmd.done:
                 break
             time.sleep(0.1)
@@ -340,7 +340,7 @@ class kill_check_base(kill_base):
         stopped_log = None
         _container_pid = container_cmd.process_id
         self.loginfo("Running kill sequence...")
-        for cmd, signal in itertools.izip(kill_cmds, signals_sequence):
+        for cmd, signal in zip(kill_cmds, signals_sequence):
             self._execute_command(cmd, signal, _container_pid)
             if signal == -1:    # Bad signal, no other checks
                 continue

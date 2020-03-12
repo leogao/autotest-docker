@@ -22,7 +22,7 @@ import logging
 # https://github.com/PyCQA/pylint/issues/73
 from distutils.version import LooseVersion  # pylint: disable=E0611,F0401
 
-import xceptions
+from . import xceptions
 
 #: Major API version number, as an integer (range 0-255).
 MAJOR = 0
@@ -113,7 +113,7 @@ def compare(lhs, rhs):
     :param rhs: Right-hand-side, same type as lhs
     """
     assert isinstance(rhs, lhs.__class__)
-    if isinstance(lhs, (str, unicode)):
+    if isinstance(lhs, str):
         return _strcmp(lhs, rhs)
     elif isinstance(lhs, (tuple, list)):
         return _tupcmp(lhs, rhs)

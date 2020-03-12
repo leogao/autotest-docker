@@ -49,20 +49,20 @@ class AllGoodBase(object):
         else:
             self.skip = skip
 
-    def __nonzero__(self):
+    def __bool__(self):
         """
         Implement truth value testing and for the built-in operation bool()
         """
 
-        return False not in self.results.values()
+        return False not in list(self.results.values())
 
     def __str__(self):
         """
         Make results of individual checkers accessible in human-readable format
         """
 
-        goods = [name for (name, result) in self.results.items() if result]
-        bads = [name for (name, result) in self.results.items() if not result]
+        goods = [name for (name, result) in list(self.results.items()) if result]
+        bads = [name for (name, result) in list(self.results.items()) if not result]
         if self:  # use self.__nonzero__()
             msg = "All Good: %s" % goods
         else:
@@ -101,7 +101,7 @@ class AllGoodBase(object):
         """
 
         _results = {}
-        for name, call in self.callables.items():
+        for name, call in list(self.callables.items()):
             if callable(call) and name not in self.skip:
                 _results[name] = call(**self.callable_args(name))
         self.results.update(self.prepare_results(_results))
@@ -146,7 +146,7 @@ class OutputGoodBase(AllGoodBase):
         self.stderr_strip = cmdresult.stderr.strip()
         # All methods called twice with mangled names, mangle skips also
         if skip is not None:
-            if isinstance(skip, (str, unicode)):
+            if isinstance(skip, str):
                 skip = [skip]
             newskip = []
             for checker in skip:
@@ -181,7 +181,7 @@ class OutputGoodBase(AllGoodBase):
 
     def prepare_results(self, results):
         duplicate = False
-        for checker, passed in results.items():
+        for checker, passed in list(results.items()):
             if not passed and not duplicate:
                 exit_status = self.cmdresult.exit_status
                 stdout = self.cmdresult.stdout.strip()
@@ -285,7 +285,7 @@ class OutputNotBad(OutputGood):
         if skip is None:
             skip = defaults
         else:
-            if isinstance(skip, basestring):
+            if isinstance(skip, str):
                 skip = defaults + [skip]
             else:
                 skip = defaults + skip
@@ -365,7 +365,7 @@ def mustfail(cmdresult, expected_status=None, failmsg=None):
     # FIXME: remove before the next API-changing release
     if expected_status is None:                    # old: mustfail(x)
         expected_status = 1
-    if isinstance(expected_status, basestring):    # old: mustfail(x, "msg")
+    if isinstance(expected_status, str):    # old: mustfail(x, "msg")
         if not expected_status.isdigit():     # pylint: disable=E1101
             failmsg = expected_status
             expected_status = 1

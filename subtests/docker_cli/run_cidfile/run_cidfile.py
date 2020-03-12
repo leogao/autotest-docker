@@ -177,7 +177,7 @@ class basic(subtest.SubSubtest):
 
     def _nonexisting_path(self, path, prefix):
         """ generate non-existing file name """
-        for _ in xrange(1000):
+        for _ in range(1000):
             name = prefix + utils.generate_random_string(8)
             if not os.path.isfile(os.path.join(path, name)):
                 return os.path.join(path, name)
@@ -187,7 +187,7 @@ class basic(subtest.SubSubtest):
     def _check_cidfile(self, long_id, cidfile):
         """ check id from cidfile with long_id """
         act = ""
-        for _ in xrange(5):
+        for _ in range(5):
             act = open(cidfile, 'r').read()
             if act != "":
                 break

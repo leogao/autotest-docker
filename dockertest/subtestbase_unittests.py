@@ -79,7 +79,7 @@ expect_fail = [
 class TestNotRedHat(TestCase):
 
     def setUp(self):
-        import subtestbase
+        from . import subtestbase
         self.subtestbase = subtestbase
         # Saves some typing
         self.stbsb = self.subtestbase.SubBase
@@ -118,7 +118,7 @@ docker-1.12.4-*              docker_cli/othersubtest      fixed in 1.12.5
 """
 
     def setUp(self):
-        import subtestbase
+        from . import subtestbase
         self.subtestbase = subtestbase
         self.stbsb = self.subtestbase.SubBase()
         self.tmpfile = None
@@ -270,14 +270,14 @@ class TestFailIfNotIn(TestCase):
 #  https://stackoverflow.com/questions/32899/how-to-generate-dynamic-parametrized-unit-tests-in-python
 def test_generator_pass(needle, haystack):
     def test(self):
-        import subtestbase
+        from . import subtestbase
         subtestbase.SubBase.failif_not_in(needle, haystack)
     return test
 
 
 def test_generator_fail(needle, haystack):
     def test(self):
-        import subtestbase
+        from . import subtestbase
         self.assertRaises(DockerTestFail,
                           subtestbase.SubBase.failif_not_in,
                           needle, haystack)
@@ -285,14 +285,12 @@ def test_generator_fail(needle, haystack):
 
 if __name__ == '__main__':
     for t in expect_pass:
-        test_name = filter(lambda c: c.isalpha() or c == '_',
-                           'test_%s__in__%s' % (t[0], t[1]))
+        test_name = [c for c in 'test_%s__in__%s' % (t[0], t[1]) if c.isalpha() or c == '_']
         test_ref = test_generator_pass(t[0], t[1])
         setattr(TestFailIfNotIn, test_name, test_ref)
 
     for t in expect_fail:
-        test_name = filter(lambda c: c.isalpha() or c == '_',
-                           'test_%s__not_in__%s' % (t[0], t[1]))
+        test_name = [c for c in 'test_%s__not_in__%s' % (t[0], t[1]) if c.isalpha() or c == '_']
         test_ref = test_generator_fail(t[0], t[1])
         setattr(TestFailIfNotIn, test_name, test_ref)
 

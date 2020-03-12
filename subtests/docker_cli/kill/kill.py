@@ -104,7 +104,7 @@ class attach_sigproxy(kill_check_base):
 
 # Add _ttyoff variant for each SubSubtest in this module
 new_classes = []
-for name, cls in locals().items()[:]:
+for name, cls in list(locals().items())[:]:
     try:
         if issubclass(cls, subtest.SubSubtest):
             name = '%s_ttyoff' % name

@@ -8,7 +8,7 @@ class run_names(run_base):
         cont = self.sub_stuff["cont"]
         name_base = cont.get_unique_name()
         names = []
-        for number in xrange(self.config['names_count']):
+        for number in range(self.config['names_count']):
             name = ('%s_%d' % (name_base, number))
             names.append(name)
             self.sub_stuff['containers'].append(name)  # just in case

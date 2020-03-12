@@ -33,7 +33,7 @@ def mock(mod_path):
 class FakeCmdResult(object):
 
     def __init__(self, **dargs):
-        for key, val in dargs.items():
+        for key, val in list(dargs.items()):
             setattr(self, key, val)
 
 RUN_CACHE = []
@@ -83,7 +83,7 @@ mock('autotest.client.shared.job')
 mock('autotest.client.shared.utils')
 mock('autotest.client.job')
 
-import version
+from . import version
 
 
 class ImageTestBase(unittest.TestCase):
@@ -101,7 +101,7 @@ class ImageTestBase(unittest.TestCase):
         cfgfile.close()
         # ConfigDict forbids writing
         cfgsect = self.config.ConfigSection(None, cfgsection)
-        for key, val in cfgdict.items():
+        for key, val in list(cfgdict.items()):
             cfgsect.set(key, val)
         cfgsect.set('__example__', '')
         cfgsect.write(cfgfile)
@@ -144,9 +144,9 @@ class ImageTestBase(unittest.TestCase):
         return FakeSubtest()
 
     def setUp(self):
-        import config
-        import images
-        import subtest
+        from . import config
+        from . import images
+        from . import subtest
         self.config = config
         self.images = images
         self.subtest = subtest

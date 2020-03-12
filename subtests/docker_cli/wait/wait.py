@@ -108,7 +108,7 @@ class WaitBase(SubSubtest):
             sss['targets'][target] = self.target_dkrcmd(target)
 
     def execute_targets(self):
-        for dkrcmd in self.sub_stuff['targets'].itervalues():
+        for dkrcmd in self.sub_stuff['targets'].values():
             dkrcmd.execute()  # blocking + detached
 
     def execute_target_waits(self):
@@ -159,7 +159,7 @@ class WaitBase(SubSubtest):
 
     def pproc_stdio(self, which):
         stdio = self.config[which]
-        if not isinstance(stdio, basestring) or stdio == '':
+        if not isinstance(stdio, str) or stdio == '':
             self.logdebug("Not checking %s", which)
             return
         self.logdebug("Checking %s", which)
@@ -197,7 +197,7 @@ class WaitBase(SubSubtest):
         super(WaitBase, self).postprocess()
         for target in self.sub_stuff['targets']:
             self.pproc_target_waits(target)
-        for target, dkrcmd in self.sub_stuff['targets'].iteritems():
+        for target, dkrcmd in self.sub_stuff['targets'].items():
             self.pproc_target(target, dkrcmd)
         if self.config['wait_verbose']:
             self.logdebug("Details of wait command: %s",

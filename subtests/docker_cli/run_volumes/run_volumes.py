@@ -49,7 +49,7 @@ class run_volumes(SubSubtestCaller):
     def initialize(self):
         super(run_volumes, self).initialize()
         ptc = self.config['pretest_cmd'].strip()
-        if isinstance(ptc, basestring) and ptc != '':
+        if isinstance(ptc, str) and ptc != '':
             utils.run(ptc, timeout=self.config['docker_timeout'])
 
 
@@ -191,7 +191,7 @@ class volumes_base(SubSubtest):
                 try:
                     self.try_kill(self, cidfilename, cmdresult)
                     self.try_rm(self, cidfilename, cmdresult)
-                except ValueError, detail:
+                except ValueError as detail:
                     self.logwarning("Cleanup problem detected: ValueError: %s",
                                     str(detail))
                     continue
@@ -226,15 +226,15 @@ class volumes_rw(volumes_base):
                 # md5sum output format:  hash + ' ' + filename|-
                 self.logdebug("Data read from %s: '%s'", write_path, data)
                 test_dict['write_hash'] = data.strip().split(None, 1)[0]
-            except (IOError, OSError, IndexError, AttributeError), xcept:
+            except (IOError, OSError, IndexError, AttributeError) as xcept:
                 self.logerror("Problem reading hash from output file: %s: "
                               "%s: %s",
                               write_path, xcept.__class__.__name__, xcept)
 
     def postprocess(self):
         super(volumes_rw, self).postprocess()
-        results_data = zip(self.sub_stuff['cmdresults'],
-                           self.sub_stuff['path_info'])
+        results_data = list(zip(self.sub_stuff['cmdresults'],
+                           self.sub_stuff['path_info']))
         for cmdresult, test_dict in results_data:
             self.failif_ne(cmdresult.exit_status, 0,
                            "Non-zero exit status: %s" % cmdresult)

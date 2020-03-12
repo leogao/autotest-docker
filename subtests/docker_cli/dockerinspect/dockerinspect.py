@@ -34,7 +34,7 @@ class inspect_base(SubSubtest):
     @staticmethod
     def verify_same_configs(subtest, source, comp, ignore_fields=None):
         for i in range(len(comp)):  # pylint: disable=E0012,C0200
-            for key in comp[i].keys():
+            for key in list(comp[i].keys()):
                 if ignore_fields and key in ignore_fields:
                     continue
                 subtest.failif(not (source[i][key] == comp[i][key]),
@@ -85,8 +85,8 @@ class inspect_base(SubSubtest):
             json_data = open(container_path + i)
             data = json.load(json_data)
             if i == 'hostconfig.json':
-                data = {u'HostConfig': data}
-            config_data = dict(config_data.items() + data.items())
+                data = {'HostConfig': data}
+            config_data = dict(list(config_data.items()) + list(data.items()))
             json_data.close()
         return config_data
 

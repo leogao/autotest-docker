@@ -2,12 +2,12 @@
 
 import time
 import socket
-import SocketServer
+import socketserver
 
 PORT = 4321
 
 
-class requesthandler(SocketServer.BaseRequestHandler):
+class requesthandler(socketserver.BaseRequestHandler):
 
     def setup(self):
         self.now = time.time()
@@ -20,7 +20,7 @@ class requesthandler(SocketServer.BaseRequestHandler):
         self.request.close()
 
 
-class forkingtcpserver(SocketServer.ForkingTCPServer):
+class forkingtcpserver(socketserver.ForkingTCPServer):
 
     address_family = socket.AF_INET
     allow_reuse_address = True

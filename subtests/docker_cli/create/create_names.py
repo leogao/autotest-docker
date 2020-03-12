@@ -11,7 +11,7 @@ class create_names(create_base):
         cont = self.sub_stuff["cont"]
         name_base = cont.get_unique_name()
         first_name = name = '%s%s' % (name_base, 0)
-        for number in xrange(1, self.config['names_count']):
+        for number in range(1, self.config['names_count']):
             self.sub_stuff['subargs'] += ['--name', name]
             name = '%s%s' % (name_base, number)
         if self.config['last_name_sticks']:

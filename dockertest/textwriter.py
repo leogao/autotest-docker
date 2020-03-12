@@ -574,7 +574,7 @@ class TextTranslator(nodes.NodeVisitor):
 
         def writerow(row):
             # Originally written to use *magic
-            lines = zip(*row)
+            lines = list(zip(*row))
             for line in lines:
                 out = ['|']
                 for i, cell in enumerate(line):

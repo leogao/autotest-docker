@@ -36,7 +36,7 @@ class DockerImageIncomplete(DockerImage):
     def __init__(self, repo, tag, long_id, created, size,
                  repo_addr=None, user=None):
         dargs = {'long_id': long_id, 'created': created, 'size': size}
-        for key, value in dargs.items():
+        for key, value in list(dargs.items()):
             if value is None:
                 value = self.__class__.UNKNOWN
                 dargs[key] = value

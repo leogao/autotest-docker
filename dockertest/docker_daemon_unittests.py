@@ -28,7 +28,7 @@ def mock(mod_path):
 class FakeCmdResult(object):
 
     def __init__(self, **dargs):
-        for key, val in dargs.items():
+        for key, val in list(dargs.items()):
             setattr(self, key, val)
 
 # Simulate utils.run(). Individual tests prime us with predetermined
@@ -41,7 +41,7 @@ def fakerun_setup(**kwargs):
                         'stderr': '',
                         'exit_status': 0,
                         'duration': 0.1 }
-    for k in fake_cmd_result.keys():
+    for k in list(fake_cmd_result.keys()):
         if k in kwargs:
             fake_cmd_result[k] = kwargs[k]
     FAKERUN_RESULTS.append(FakeCmdResult(**fake_cmd_result))
@@ -66,7 +66,7 @@ setattr(mock('autotest.client.utils'), 'run', fakerun)
 class DDTestBase(unittest2.TestCase):
 
     def setUp(self):
-        import docker_daemon
+        from . import docker_daemon
         self.dd = docker_daemon
 
 
@@ -90,7 +90,7 @@ class DDTest(DDTestBase):
             def value_to_json(value):
                 return json.loads('[{"%s":"%s"}]' % value)
         i = c('foo')
-        self.assertEqual(i.get_json('bar'), [{u'foo': u'bar'}])
+        self.assertEqual(i.get_json('bar'), [{'foo': 'bar'}])
         self.assertEqual(i.interface, None)
 
 
@@ -103,7 +103,7 @@ class TestWhichDocker(unittest2.TestCase):
         """
         Default to 'docker' when systemctl output isn't helpful
         """
-        import docker_daemon
+        from . import docker_daemon
         fakerun_setup(stdout="")
         self.assertEqual(docker_daemon.which_docker(), 'docker', 'default')
 
@@ -111,7 +111,7 @@ class TestWhichDocker(unittest2.TestCase):
         """
         Parse realistic systemctl output
         """
-        import docker_daemon
+        from . import docker_daemon
         fakerun_setup(stdout="""UNIT                       LOAD   ACTIVE SUB     DESCRIPTION
 auditd.service             loaded active running Security Auditing Service
 chronyd.service            loaded active running NTP client/server
@@ -159,7 +159,7 @@ class TestSystemdShow(unittest2.TestCase):
         """
         The usual case: systemctl responds with a 'Property=XXX' one-liner
         """
-        import docker_daemon
+        from . import docker_daemon
 
         expect = 'baz'
         fakerun_setup(stdout="\n")                      # for which_docker()
@@ -172,7 +172,7 @@ class TestSystemdShow(unittest2.TestCase):
         """
         If for some reason systemctl does not return a 'Property=XXX' line
         """
-        import docker_daemon
+        from . import docker_daemon
 
         fakerun_setup(stdout="\n")                      # for which_docker()
         fakerun_setup(stdout="UnExpectedResultWithNoEqualsSign\n")
@@ -183,7 +183,7 @@ class TestSystemdShow(unittest2.TestCase):
         """
         docker_daemon.pid() depends on systemctl_show
         """
-        import docker_daemon
+        from . import docker_daemon
 
         # It also checks the docker daemon command line, because it has to
         # distinguish between dockerd itself and dockerd run under runc

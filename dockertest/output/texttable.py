@@ -53,7 +53,7 @@ class ColumnRanges(Mapping):
         ends = starts[1:] + [None]  # ending offsets EXCLUSIVE for range()
         # Stored separetly b/c dict() storage would be un-ordered!
         self.columns = tuple(columns)
-        ranges = zip(starts, ends)  # needed for exception message
+        ranges = list(zip(starts, ends))  # needed for exception message
         self.ranges = tuple(ranges)
         self.count = len(columns)  # allow check for duplicates vs set()
         # Check duplicate column names or ranges
@@ -101,7 +101,7 @@ class ColumnRanges(Mapping):
         for index, (start, end) in enumerate(self.ranges):
             if end is None:
                 return self.columns[-1]
-            if offset in xrange(start, end):
+            if offset in range(start, end):
                 return self.columns[index]
         if offset > 0:
             return self.columns[-1]  # beyond end of any ranges
@@ -281,7 +281,7 @@ class TextTable(MutableSet, Sequence):
         """
         newdict = {}
         strippedline = line.strip()
-        for (start, end), colname in self.columnranges.items():
+        for (start, end), colname in list(self.columnranges.items()):
             newdict[colname] = self.value_filter(strippedline[start:end])
         return newdict
 

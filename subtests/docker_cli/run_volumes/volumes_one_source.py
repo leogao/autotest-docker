@@ -55,7 +55,7 @@ class volumes_one_source(volumes_base):
             self.failif_ne(result.exit_status, 0, "Failed: %s" % (result))
         # assert md5sums
         cntr_md5s = [x.stdout.split()[0] for x in self.sub_stuff['cmdresults']]
-        cntr_results = zip(self.sub_stuff['names'], cntr_md5s)
+        cntr_results = list(zip(self.sub_stuff['names'], cntr_md5s))
         for name, result in cntr_results:
             file_path = self.tmpdir + "/" + name
             with open(file_path, 'r') as content:

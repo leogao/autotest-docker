@@ -76,7 +76,7 @@ def make_USCI(base_class):
 
         def conv(self, input_string):
             if not isinstance(self.docitems, ConfigINIParser):
-                print ('Warning: No configuration found for: %s'
+                print('Warning: No configuration found for: %s'
                        % self.name(self.subtest_path))
                 return ''
             # Supplied by tuple-subclass
@@ -123,12 +123,12 @@ class SubtestsDocumented(object):
         try:
             self.doc = open(os.path.join(path, 'subtests.rst')).read()
         except IOError:
-            print "No subtests.rst file found, perhaps you need to run make"
+            print("No subtests.rst file found, perhaps you need to run make")
             sys.exit(-1)
         try:
             self.doc = open(os.path.join(path, 'additional.rst')).read()
         except IOError:
-            print "No additional.rst file found, perhaps you need to run make"
+            print("No additional.rst file found, perhaps you need to run make")
             sys.exit(-1)
 
     def check(self):
@@ -158,28 +158,28 @@ class SubtestsDocumented(object):
             missing_sections = self.missing_sections(subtestdocsec)
             if missing_sections is not None:
                 err = True
-                print ("%s: Missing '%s' section"
+                print("%s: Missing '%s' section"
                        % (name, missing_sections.title()))
             extra_sections = self.extra_sections(subtestdocsec)
             if extra_sections is not None:
                 err = True
-                print ("%s: Extra nonstandard '%s' section found"
+                print("%s: Extra nonstandard '%s' section found"
                        % (name, extra_sections.title()))
             if 'configuration' in subtestdocsec.sections:
                 err = True
-                print ("%s: Hard-coded configuration section found"
+                print("%s: Hard-coded configuration section found"
                        % name)
             out_of_order = self.section_out_of_order(subtestdocsec)
             if out_of_order is not None:
                 err = True
-                print ("%s: Out of order section: %s.  Should be: #%d"
+                print("%s: Out of order section: %s.  Should be: #%d"
                        % (name, out_of_order,
                           # Index is zero-based
                           self.sec_order.index(out_of_order) + 1))
             undoc_options = self.undoc_options(dir_item, cls)
             if undoc_options is not None:
                 err = True
-                print ("%s: Undocumented configuration option(s): %s"
+                print("%s: Undocumented configuration option(s): %s"
                        % (name, undoc_options))
         return err, dir_tests
 
@@ -188,7 +188,7 @@ class SubtestsDocumented(object):
         doc_tests = set(re.findall(r'``([^`\n]+)`` Sub-test\n===', self.doc))
         missing = doc_tests.difference(dir_tests)
         if missing:
-            print ("%s tests are documented, but not present in the file "
+            print("%s tests are documented, but not present in the file "
                    "structure." % ", ".join(missing))
             return True
         return False

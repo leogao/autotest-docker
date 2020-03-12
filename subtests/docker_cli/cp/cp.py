@@ -21,7 +21,7 @@ Prerequisites
    structure.
 """
 
-from StringIO import StringIO
+from io import StringIO
 import pickle
 import hashlib
 import inspect

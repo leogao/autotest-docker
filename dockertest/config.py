@@ -9,13 +9,13 @@ unit-tested but not intended for wide-spread general use.
 # Pylint runs from a different directory, it's fine to import this way
 # pylint: disable=W0403
 
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 from collections import MutableMapping
 import os.path
 import sys
 import copy
 
-import xceptions
+from . import xceptions
 
 
 #: Absolute path to directory containing this module
@@ -206,7 +206,7 @@ class ConfigSection(object):
         # N/B: This won't work with DEFAULTS
         if not scp.has_section(self._section):
             scp.add_section(self._section)
-        for key, value in self.items():
+        for key, value in list(self.items()):
             scp.set(self._section, key, value)
         scp.write(open(fileobject.name, "w+b"))  # truncates file first
 
@@ -253,7 +253,7 @@ class ConfigDict(MutableMapping):
         mine = set([val.lower()
                     for val in self._config_section.options()])
         default = set([val.lower()
-                       for val in self._config_section.defaults().keys()])
+                       for val in list(self._config_section.defaults().keys())])
         # Special option is cascaded, never inherit!
         default -= set(['__example__'])
         complete = mine | default
@@ -350,7 +350,7 @@ class Config(dict):
             default_cd.read(open(default_path, 'r'))
             # Defaults must all be string values
             defaults_ = dict([(key, str(val))
-                              for key, val in default_cd.items()])
+                              for key, val in list(default_cd.items())])
             # Options always have lowercase names
             if '__example__' in defaults_:
                 defaults_['__example__'] = defaults_['__example__'].lower()
@@ -365,7 +365,7 @@ class Config(dict):
                 Config.load_config_sec(newcd, 'DEFAULTS', configs_dict)
                 defaults_ = dict([(key, str(val))
                                   for key,
-                                  val in configs_dict['DEFAULTS'].items()])
+                                  val in list(configs_dict['DEFAULTS'].items())])
             self.__class__.defaults_ = defaults_
         # Return CACHED defaults dictionary
         return self.__class__.defaults_
@@ -410,7 +410,7 @@ class Config(dict):
         else:
             # Everything overriden, prevent defaults creeping in
             newcd['__example__'] = ''
-        configs_dict[section] = dict(newcd.items())  # incoming section
+        configs_dict[section] = dict(list(newcd.items()))  # incoming section
 
     @staticmethod
     def load_config_dir(dirpath, filenames, configs_dict, defaults_dict):
@@ -440,7 +440,7 @@ class Config(dict):
                 # Will seek(0), incorporate deaults & overwrite any dupes.
                 newcd.read(config_file)
                 if section not in configs_dict:
-                    configs_dict[section] = dict(newcd.items())
+                    configs_dict[section] = dict(list(newcd.items()))
                     continue  # all defaults, no processing of __example__
                 # Remove __example__ options where newcd option value
                 # differs from existing (default) value in configs_dict.
@@ -472,10 +472,10 @@ class Config(dict):
         """
         the_copy = {}
         # self.configs holds dict of ConfigDict()s
-        for sec_key, sec_value in self.configs.items():
+        for sec_key, sec_value in list(self.configs.items()):
             # convert each section from ConfigDict to regular dict.
             sec_copy = {}
-            for cfg_key, cfg_value in sec_value.items():
+            for cfg_key, cfg_value in list(sec_value.items()):
                 sec_copy[cfg_key] = cfg_value
             the_copy[sec_key] = sec_copy
         return the_copy
@@ -503,11 +503,11 @@ def none_if_empty(dict_like, key_name=None):
     :param key_name: Optional single key to check, doesn't need to exist.
     """
     if key_name is None:
-        keys = dict_like.keys()
+        keys = list(dict_like.keys())
     else:
         keys = [key_name]
     for key in keys:
         value = dict_like.get(key, "")
-        if(isinstance(value, (str, unicode)) and
+        if(isinstance(value, str) and
            len(value.strip()) < 1):
             dict_like[key] = None

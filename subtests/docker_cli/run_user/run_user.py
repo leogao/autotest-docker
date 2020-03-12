@@ -257,7 +257,7 @@ class bad_number(run_user_base):
                 uids.append(int(line.split(':', 3)[2]))
             except (IndexError, TypeError):
                 pass
-        for i in xrange(1, 2147483647):
+        for i in range(1, 2147483647):
             if i not in uids:
                 uid = i
                 break

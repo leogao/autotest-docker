@@ -396,7 +396,7 @@ class BuildSubSubtest(BuildBase, postprocessing, subtest.SubSubtest):
                            'postproc_cmd_csv'])    # CSV of postprocess steps
 
     def dockerfile_dir_path(self, dir_path):
-        if not isinstance(dir_path, basestring) or dir_path is None:
+        if not isinstance(dir_path, str) or dir_path is None:
             return dir_path
         if dir_path[0] == '/':
             srcdir = self.parent_subtest.srcdir

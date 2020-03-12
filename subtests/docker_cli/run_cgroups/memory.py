@@ -171,7 +171,7 @@ class memory_base(cgroups_base):
         self.failif(not isinstance(this_result, dict),
                     ("expected this_result to be a dict; it's a %s" %
                      this_result.__class__))
-        status = this_result.keys().pop()
+        status = list(this_result.keys()).pop()
         if status == "PASS":
             self.logdebug(this_result)
             passed.append(True)
@@ -187,7 +187,7 @@ class memory_base(cgroups_base):
             self.failif(not isinstance(this_result, dict),
                         ("expected this_result to be a dict; it's a %s" %
                          this_result.__class__))
-            status = this_result.keys().pop()
+            status = list(this_result.keys()).pop()
             if status == "FAIL":
                 self.logdebug("Expected fail: %s", this_result)
                 passed.append(True)

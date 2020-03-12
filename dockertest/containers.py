@@ -26,11 +26,11 @@ Where/when ***possible***, both parameters and return values follow this order:
 import json
 from autotest.client import utils
 from autotest.client.shared import error
-from output import OutputGood
-from output import TextTable
-from config import get_as_list
-from subtestbase import SubBase
-from xceptions import DockerTestError
+from .output import OutputGood
+from .output import TextTable
+from .config import get_as_list
+from .subtestbase import SubBase
+from .xceptions import DockerTestError
 
 
 # Many attributes simply required here
@@ -347,7 +347,7 @@ class DockerContainers(object):
                         return _json
             #  failed command, empty list, or empty list item
             return None
-        except (TypeError, ValueError, error.CmdError), details:
+        except (TypeError, ValueError, error.CmdError) as details:
             self.subtest.logdebug("docker inspect %s raised: %s: %s",
                                   long_id, details.__class__.__name__,
                                   str(details))
@@ -558,7 +558,7 @@ class DockerContainers(object):
         """
         if not hasattr(containers, "__iter__"):
             raise TypeError("clean_all() called with non-iterable.")
-        if isinstance(containers, basestring):
+        if isinstance(containers, str):
             raise TypeError("clean_all() called with a string, "
                             "instead of an interable of strings.")
         preserve_cnames = self.subtest.config.get('preserve_cnames')

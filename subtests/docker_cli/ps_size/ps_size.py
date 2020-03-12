@@ -104,7 +104,7 @@ class simple(ps_size_base):
             sizes = self.sub_stuff['sizes']
             self.sub_stuff['dc'].get_size = False
             err = []
-            for i in xrange(len(sizes)):
+            for i in range(len(sizes)):
                 size = get_container_size(containers, created_containers[i])
                 exp = sizes[i]
                 self.loginfo("Verifying %d", exp)

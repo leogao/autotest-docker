@@ -69,7 +69,7 @@ class iptable_base(SubSubtest):
         dc = DockerContainers(self)
         names = dc.list_container_names()
         jsons = [dc.json_by_name(name)[0] for name in names]
-        njs = dict(zip(names, jsons))
+        njs = dict(list(zip(names, jsons)))
         result = {}
         for name in [_ for _ in njs
                      if njs[_]["NetworkSettings"]["IPAddress"] != ""]:

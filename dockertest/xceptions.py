@@ -11,7 +11,7 @@ Exception subclasses specific to docker subtests
 # Some code runs deep, many ancestors actually needed
 # pylint: disable=R0901
 
-from ConfigParser import InterpolationError
+from configparser import InterpolationError
 from autotest.client.shared import error
 
 
