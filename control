@@ -12,7 +12,7 @@ import re
 import os.path
 import logging
 import collections
-import ConfigParser
+import configparser
 
 def log_list(method, msg, lst):
     """
@@ -93,7 +93,7 @@ def get_bzobj(bzopts):
             del sys.path[0]
     quiet_bz()  # the bugzilla module is very noisy
     bz = bugzilla.Bugzilla(url=url)
-    if username is not '' and password is not '':
+    if username != '' and password != '':
         bz.login(user=username, password=password)
     return bz
 
@@ -120,7 +120,7 @@ def filter_bugged(subthings, bug_blocked, subtest_modules):
     In-place remove all sub/sub-subtests blocked by bugzillas
     """
     submap = subtests_subsubtests(set(subthings), subtest_modules)
-    for subtest, subsubtests in submap.items():
+    for subtest, subsubtests in list(submap.items()):
         if subtest in bug_blocked:
             for subsubtest in subsubtests:
             #    logging.info("Excluding Sub-subtest'%s' because "
@@ -148,7 +148,7 @@ class Singleton(object):
         return cls._singleton
 
 
-class ControlINI(ConfigParser.SafeConfigParser, Singleton):
+class ControlINI(configparser.SafeConfigParser, Singleton):
     """
     Representation of control settings
     """
@@ -188,10 +188,10 @@ class ControlINI(ConfigParser.SafeConfigParser, Singleton):
                                                    key_match=''),
                                      Query=dict(product='',
                                                 component='',
-                                                status='')).iteritems():
+                                                status='')).items():
             if not super(ControlINI, self).has_section(section):
                 super(ControlINI, self).add_section(section)
-            for option, value in options.iteritems():
+            for option, value in options.items():
                 super(ControlINI, self).set(section, option, value)
 
     def read(self, filenames=None):
@@ -208,7 +208,7 @@ class ControlINI(ConfigParser.SafeConfigParser, Singleton):
         result = ["<Empty Defaults>"]
         # Try load defaults via readfp as documented
         try:
-            with open(self.control_ini_default, 'rb') as defaults_file:
+            with open(self.control_ini_default, 'r') as defaults_file:
                 # readfp does _not_ merge content, defaults still
                 # used for missing keys, upon reference.
                 super(ControlINI, self).readfp(defaults_file)
@@ -231,7 +231,7 @@ class ControlINI(ConfigParser.SafeConfigParser, Singleton):
         """
         if fileobject is None:
             fileobject = open(os.path.join(self.write_path,
-                                           'control.ini'), "wb")
+                                           'control.ini'), "w")
         logging.debug("Saving control configuration reference copy to %s",
                       fileobject.name)
         super(ControlINI, self).write(fileobject)
@@ -243,7 +243,7 @@ class ControlINI(ConfigParser.SafeConfigParser, Singleton):
         """
         try:
             ini_x_s = self.get('Control', optname).strip()
-        except ConfigParser.NoOptionError:
+        except configparser.NoOptionError:
             ini_x = []
         else:
             if len(ini_x_s) > 1:
@@ -363,7 +363,7 @@ class ControlINI(ConfigParser.SafeConfigParser, Singleton):
         key_field = self.get('Bugzilla', 'key_field').strip()
         key_match = self.get('Bugzilla', 'key_match').strip()
         query = {key_field: key_match}
-        for key, value in dict(self.items('Query')).iteritems():
+        for key, value in dict(self.items('Query')).items():
             if ',' in value:
                 value = [item.strip()
                          for item in value.strip().split(',')
@@ -410,7 +410,7 @@ class ControlINI(ConfigParser.SafeConfigParser, Singleton):
         try:
             bugs = bz.query(self.bz_query(bz))
             namestobzs = self.subthings_to_bugs(bugs)
-        except Fault, xcept:
+        except Fault as xcept:
             logging.warning("Ignoring BZ query exception: %s", xcept)
             return {}
         finally:
@@ -447,9 +447,9 @@ class ControlINI(ConfigParser.SafeConfigParser, Singleton):
 
         log_list(logging.info,
                  "Sub/sub-subtests blocked by bugzillas:",
-                 bug_blocked.items())
+                 list(bug_blocked.items()))
         self.set('Bugzilla', 'excluded',
-                 ", ".join(bug_blocked.keys()))
+                 ", ".join(list(bug_blocked.keys())))
         return bug_blocked
 
 
@@ -481,17 +481,18 @@ class Step(collections.Callable):
     """
 
     # There's going to be a trillion of these
-    __slots__ = ('uri', 'context', 'tag')
+    __slots__ = ('uri', 'context', 'tag', '__name__')
 
     def __init__(self, uri, context, advance=True):
         if not isinstance(context, Context):
             raise TypeError("Must pass a Context instance as context "
                             " parameter, not a %s"
                             % context.__class__.__name__)
-        if not isinstance(uri, basestring):
+        if not isinstance(uri, str):
             raise TypeError("Must pass a string instance as uri "
                             " parameter, not a %s"
                             % uri.__class__.__name__)
+        self.__name__ = ''
         self.uri = uri
         self.context = context
         if advance:
@@ -654,7 +655,7 @@ class StepInit(Context, collections.Callable):
         except:
             # Don't fail entire job b/c BZ access problem
             bug_blocked = {}
-        subthing_exclude += bug_blocked.keys()
+        subthing_exclude += list(bug_blocked.keys())
         # Log and remove all bug_blocked items from subthings (in-place modify)
         filter_bugged(subthings, bug_blocked, subtest_modules)
         # Save as CSV to operational/reference control.ini
