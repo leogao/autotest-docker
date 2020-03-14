@@ -194,7 +194,7 @@ class ConfigSection(object):
         """
         Overwrite current contents of ``fileobject.name``
         """
-        return self._scp.write(open(fileobject.name, "wb"))
+        return self._scp.write(open(fileobject.name, "w"))
 
     def merge_write(self, fileobject):
         """
@@ -347,7 +347,7 @@ class Config(dict):
             default_path = os.path.join(CONFIGDEFAULT, DEFAULTSFILE)
             custom_path = os.path.join(CONFIGCUSTOMS, DEFAULTSFILE)
             default_cd = ConfigDict('DEFAULTS')
-            default_cd.read(open(default_path, 'r'))
+            default_cd.read(open(default_path, 'r', encoding='utf-8'))
             # Defaults must all be string values
             defaults_ = dict([(key, str(val))
                               for key, val in list(default_cd.items())])
@@ -357,7 +357,7 @@ class Config(dict):
             else:
                 defaults_['__example__'] = ''  # Option must always exist
             if os.path.isfile(custom_path):
-                custom_file = open(custom_path, 'r')
+                custom_file = open(custom_path, 'r', encoding='utf-8')
                 newcd = ConfigDict('DEFAULTS', defaults_)
                 newcd.read(custom_file)
                 configs_dict = {'DEFAULTS': defaults_}
@@ -428,7 +428,7 @@ class Config(dict):
             fullpath = os.path.join(dirpath, filename)
             if filename.startswith('.') or not filename.endswith('.ini'):
                 continue
-            config_file = open(fullpath, 'r')
+            config_file = open(fullpath, 'r', encoding='utf-8')
             # Easiest way to get all sections
             scp = SafeConfigParser()
             scp.readfp(config_file)
