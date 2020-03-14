@@ -63,7 +63,7 @@ class AllGoodBase(object):
 
         goods = [name for (name, result) in list(self.results.items()) if result]
         bads = [name for (name, result) in list(self.results.items()) if not result]
-        if self:  # use self.__nonzero__()
+        if self:  # use self.__bool__()
             msg = "All Good: %s" % goods
         else:
             msg = "Good: %s; Not Good: %s; " % (goods, bads)
@@ -160,12 +160,12 @@ class OutputGoodBase(AllGoodBase):
             self.callables[checker + '_stderr'] = getattr(self, checker)
         self.call_callables()
         # Not nonzero means One or more checkers returned False
-        if not ignore_error and not self.__nonzero__():
+        if not ignore_error and not self.__bool__():
             # Str representation will provide details
             raise DockerOutputError(str(self))
 
     def __str__(self):
-        if not self.__nonzero__():
+        if not self.__bool__():
             msg = super(OutputGoodBase, self).__str__()
             return "%s\nSTDOUT:\n%s\nSTDERR:\n%s" % (msg, self.stdout_strip,
                                                      self.stderr_strip)
