@@ -43,7 +43,7 @@ class log_versions(subtest.Subtest):
         Write the given content to sysinfodir/filename
         """
         path = os.path.join(self.job.sysinfo.sysinfodir, filename)
-        with open(path, 'a+b') as outfile:
+        with open(path, 'a') as outfile:
             outfile.write(content)
 
     @staticmethod
