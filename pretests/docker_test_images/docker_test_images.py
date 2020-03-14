@@ -58,7 +58,7 @@ class docker_test_images(SubSubtestCaller):
     def postprocess(self):
         # File in top-level 'results/default/sysinfo' directory
         with open(os.path.join(self.job.sysinfo.sysinfodir,
-                               'docker_images'), 'wb') as info_file:
+                               'docker_images'), 'w') as info_file:
             for img in self.stuff['di'].list_imgs():
                 info_file.write("%s\n" % str(img))
                 self.loginfo(str(img))
@@ -82,10 +82,10 @@ class docker_test_images(SubSubtestCaller):
             self.loginfo("Updated preserve_fqins: %s",
                          cfgsec.get('preserve_fqins'))
             # This will get picked up when next test executes
-            cfgsec.write(open(self.stuff['defaults_ini'], 'wb'))
+            cfgsec.write(open(self.stuff['defaults_ini'], 'w'))
             # Be kind to anyone debugging the contents
             msg = "\n# preserve_fqins modified by %s\n" % self.config_section
-            open(self.stuff['defaults_ini'], 'ab').write(msg)
+            open(self.stuff['defaults_ini'], 'a').write(msg)
         super(docker_test_images, self).postprocess()
 
 
