@@ -53,6 +53,8 @@ MYDIR = os.path.dirname(sys.modules[__name__].__file__)
 #: Parent directory of directory containing this module
 PARENTDIR = os.path.dirname(MYDIR)
 
+def cmp(a, b):
+    return (a > b) - (a < b)
 
 def str2int(version_string):
     """
@@ -130,7 +132,7 @@ def get_doc_version():
     """
     version = None
     # Prevent documentation-generation mocks from clashing with testing
-    for line in open(os.path.join(PARENTDIR, 'conf.py'), 'rb'):
+    for line in open(os.path.join(PARENTDIR, 'conf.py'), 'r'):
         if line.startswith('version ='):
             version = line.split("'")[1]
             return version
