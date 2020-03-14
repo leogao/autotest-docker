@@ -22,19 +22,16 @@ class ColumnRanges(Mapping):
 
     __slots__ = ('ranges', 'columns', 'count')
 
-    #: Iterable of start/end character-offset tuples corresponding to columns
-    ranges = None
-
-    #: Iterable of column names corresponding to ranges
-    columns = None
-
-    #: Number of columns/ranges
-    count = None
-
     #: Regex specifying the column separator
     _re = re.compile(r"\s\s+")
 
     def __init__(self, header, min_col_len=3, expected=None):
+        #: Iterable of start/end character-offset tuples corresponding to columns
+        self.ranges = None
+        #: Iterable of column names corresponding to ranges
+        self.columns = None
+        #: Number of columns/ranges
+        self.count = None
         header_strip = header.strip()  # just in case
         cols = [col for col in self._re.split(header_strip)]
         if expected is not None and len(cols) != expected:
