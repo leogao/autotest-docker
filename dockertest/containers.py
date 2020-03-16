@@ -572,6 +572,8 @@ class DockerContainers(object):
         self.verbose = False
         try:
             for name in containers:
+                if name == None:
+                    continue
                 name = name.strip()
                 if name in preserve_cnames_set:
                     continue
