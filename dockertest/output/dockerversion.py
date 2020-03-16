@@ -40,6 +40,8 @@ class DockerVersion(object):
             version_string = subprocess.check_output(docker_path + ' version',
                                                      shell=True,
                                                      close_fds=True)
+            if type(version_string) == bytes:
+                version_string = version_string.decode()
         self.version_string = version_string
         # FIXME: This should call super(...).__init__(...) (my bad)
 
@@ -54,6 +56,8 @@ class DockerVersion(object):
                                re.IGNORECASE)
             mobj = None
             for line in self.version_lines:
+                if type(line) == bytes:
+                    line = line.decode()
                 mobj = regex.search(line.strip())
                 if bool(mobj):
                     self._client = mobj.group(1)
@@ -68,6 +72,8 @@ class DockerVersion(object):
                                re.IGNORECASE)
             mobj = None
             for line in self.version_lines:
+                if type(line) == bytes:
+                    line = line.decode()
                 mobj = regex.search(line.strip())
                 if bool(mobj):
                     self._server = mobj.group(1)
@@ -157,7 +163,8 @@ class DockerVersion(object):
                     except ValueError:
                         raise ValueError("Error splitting info line '%s'"
                                          % line)
-                    infodict[_key.strip()] = value.strip()
+                    if _key.strip() not in infodict.keys():
+                        infodict[_key.strip()] = value.strip()
                 return self._info(is_client, key)
             else:  # avoid infinite recursion
                 self._oops("key %s" % key)
@@ -201,7 +208,7 @@ class DockerVersion(object):
     @staticmethod
     def _require(wanted, name, other_version):
         required_version = LooseVersion(wanted)
-        if other_version < required_version:
+        if str(other_version) < str(required_version):
             msg = ("Test requires docker %s version >= %s; %s found"
                    % (name, required_version, other_version))
             raise DockerTestNAError(msg)
