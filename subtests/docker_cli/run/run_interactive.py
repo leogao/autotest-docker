@@ -7,6 +7,7 @@ class run_interactive(run_base):
 
     def init_dockercmd(self):
         in_pipe_r, in_pipe_w = os.pipe()
+        in_pipe_w = os.fdopen(in_pipe_w, 'w')
         self.sub_stuff['stdin'] = in_pipe_r
         self.sub_stuff['stdin_write'] = in_pipe_w
         dkrcmd = AsyncDockerCmd(self, 'run', self.sub_stuff['subargs'])
@@ -18,9 +19,9 @@ class run_interactive(run_base):
         os.close(self.sub_stuff['stdin'])
         # Assume it's line-buffered
         secret_sauce = '%s\n' % self.config['secret_sauce']
-        os.write(self.sub_stuff['stdin_write'], secret_sauce)
+        self.sub_stuff['stdin_write'].write(secret_sauce)
         # Should cause container to exit
-        os.close(self.sub_stuff['stdin_write'])
+        self.sub_stuff['stdin_write'].close()
         self.sub_stuff['dkrcmd'].wait()
 
     def postprocess(self):
