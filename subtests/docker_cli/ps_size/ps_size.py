@@ -85,6 +85,8 @@ class simple(ps_size_base):
     def postprocess(self):
         def convert_size(size):
             """ Converts the size from docker ps --size format """
+            fint  = size.split()[0].replace('G','').replace('M','').replace('B','')
+            size = size.replace(fint, "%s " % fint)
             split_size = size.split()
             return float(split_size[0]) * {'B': 0.001,
                                            'MB': 1,
