@@ -90,7 +90,7 @@ class info(subtest.Subtest):
         """
         Verify docker info settings for overlay2 storage driver.
         """
-        self.failif_ne(info_map['backing_filesystem'], 'xfs',
+        self.failif_ne(info_map['backing_filesystem'], 'extfs',
                        'overlay2 Backing Filesystem')
 
     def verify_pool_name(self, expected_pool_name):
