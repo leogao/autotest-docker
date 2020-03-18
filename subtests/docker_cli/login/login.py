@@ -101,7 +101,7 @@ class login_base(SubSubtest):
         subargs = ['--rm', '--entrypoint', 'htpasswd', registry_fqin,
                    '-Bbn', self.sub_stuff['user'], self.sub_stuff['passwd']]
         htpasswd_cmdresult = DockerCmd(self, 'run', subargs).execute()
-        with open('htpasswd', 'wb') as htpasswd_fh:
+        with open('htpasswd', 'w') as htpasswd_fh:
             htpasswd_fh.write(htpasswd_cmdresult.stdout)
 
     def _preserve_docker_auth_file(self):
@@ -161,12 +161,8 @@ class login_base(SubSubtest):
         """
         if password is None:
             password = self.sub_stuff['passwd']
-        # FIXME: --email option is deprecated in 1.12, and will be
-        # removed in 1.13. We still need it for <= 1.10; otherwise
-        # docker prompts from stdin, and we hang.
         dc = DockerCmd(self, 'login', ['--username', self.sub_stuff['user'],
                                        '--password', password,
-                                       '--email', 'nobody@redhat.com',
                                        self.sub_stuff['server']])
         return dc.execute()
 
@@ -192,7 +188,8 @@ class login_base(SubSubtest):
             cred_hash = creds['auths'][server]['auth']
             # ...simply a base64-encoded('username:password'), see:
             #  https://coreos.com/os/docs/latest/registry-authentication.html
-            expected = b64encode('{user}:{passwd}'.format(**self.sub_stuff))
+            param = '{user}:{passwd}'.format(**self.sub_stuff).encode()
+            expected = b64encode(param).decode()
             self.failif_ne(cred_hash, expected,
                            'saved credentials in %s' % auth_file)
 
