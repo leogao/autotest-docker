@@ -51,8 +51,9 @@ class run_dns(subtest.Subtest):
             for name in search:
                 subargs.insert(0, '--dns-search %s' % name)
         res = mustpass(DockerCmd(self, 'run', subargs).execute())
-        dnss.append(self.re_nameserver.findall(res.stdout))
-        search = self.re_search.findall(res.stdout)
+        res_output = re.sub(r'#.*\n', '',res.stdout)
+        dnss.append(self.re_nameserver.findall(res_output))
+        search = self.re_search.findall(res_output)
         self.failif(len(search) > 1, "Number of search lines is > 1:\n%s"
                     % res)
         if search:
