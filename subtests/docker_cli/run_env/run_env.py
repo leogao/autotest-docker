@@ -63,7 +63,7 @@ class spam(SubSubtest):
         self.sub_stuff['output'] = os.path.join(self.tmpdir, 'env.output')
         resultdir = self.parent_subtest.resultsdir
         inputcopy = os.path.join(resultdir, "env.input")
-        with open(inputcopy, 'wb') as inpf:
+        with open(inputcopy, 'w') as inpf:
             for key, value in self.sub_stuff['envd'].items():
                 inpf.write("%s=%s\n" % (key, value))
 
