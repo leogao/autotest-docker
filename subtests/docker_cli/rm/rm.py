@@ -85,7 +85,7 @@ class rm_sub_base(SubSubtest):
         environment.set_selinux_context(volume, "svirt_sandbox_file_t")
         start_filename = os.path.join(volume, 'start')
         self.sub_stuff['start_filename'] = start_filename
-        ssfile = open(start_filename, "wb")
+        ssfile = open(start_filename, "w")
         init_time = str(self.parent_subtest.stuff['init_time'])
         ssfile.write(init_time)
         ssfile.close()
