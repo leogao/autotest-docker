@@ -39,7 +39,7 @@ class DockerInfo(object):
             self._info_string = subprocess.check_output(docker + ' info',
                                                         shell=True,
                                                         close_fds=True)
-        return self._info_string
+        return self._info_string.decode()
 
     @property
     def info_table(self):
@@ -75,9 +75,12 @@ class DockerInfo(object):
         """
         table = {}
         current_key = None
+        align_flag = False
         for line in self.info_string.splitlines():
             # Almost every line will be Foo: Bar, but 'Insecure Registries:'
             # is followed by a simple list of IPv4 netmasks
+            if 'Client:' == line:
+                align_flag = True
             if ': ' in line or line.endswith(':'):
                 (key, value) = [e.strip() for e in line.split(':', 1)]
             else:
@@ -85,6 +88,8 @@ class DockerInfo(object):
                 key = line.strip()
                 value = ''
             key = _normalize(key)
+            if align_flag:
+                line = (len(line) - len(line.lstrip()) - 1)*' ' + line.lstrip()
             if line.startswith(' '):
                 if not current_key:
                     raise SyntaxError("docker info: indented line '%s'"
