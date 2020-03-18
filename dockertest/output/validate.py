@@ -189,7 +189,7 @@ class OutputGoodBase(AllGoodBase):
                 detail = 'Command '
                 if exit_status != 0:
                     detail += 'exit %d ' % exit_status
-                if stdout > 0:
+                if stdout != '':
                     detail += 'stdout "%s" ' % stdout
                 if stderr:
                     detail += 'stderr "%s".' % stderr
