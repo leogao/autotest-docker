@@ -168,7 +168,7 @@ class Subtest(subtestbase.SubBase, test.test):
             # Control-file & behavior cannot be assumed, file may not exist.
             try:
                 cache_section = config.ConfigDict(section)
-                cache_section.read(open(fullpath, 'rb'))
+                cache_section.read(open(fullpath, 'r'))
                 # The class instance isn't needed, only store the data
                 cache = dict(list(cache_section.items()))
             except (IOError, OSError, Error):
