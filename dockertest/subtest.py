@@ -147,7 +147,8 @@ class Subtest(subtestbase.SubBase, test.test):
         self.step_log_msgs['postprocess_iteration'] = (
             "postprocess_iteration() #%d of #%d"
             % (self.iteration, self.iterations))
-        if self.config.get('verify_enforcing', True):
+        mode = selinux_is_enforcing()
+        if mode and self.config.get('verify_enforcing', True):
             self.failif(not selinux_is_enforcing(),
                         "SELinux mode != Enforcing and"
                         " verify_enforcing is set")

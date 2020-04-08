@@ -12,7 +12,10 @@ import subprocess
 # N/B: This module is automaticly generated from libselinux, so the
 # python docs are terrible.  The C library man(3) pages provided by
 # the 'libselinux-devel' RPM package (or equivilent) are much better.
-import selinux
+try:
+    import selinux
+except ModuleNotFoundError:
+    pass
 from dockertest.docker_daemon import which_docker
 
 
@@ -75,11 +78,14 @@ def selinux_is_enforcing():
     :raise ValueError: If there was an error from libselinux
     :rtype: bool
     """
-    mode = selinux.security_getenforce()
-    if mode not in [selinux.ENFORCING, selinux.PERMISSIVE]:
-        raise ValueError("Unexpected value from"
-                         " security_getenforce(): %s" % mode)
-    return mode == selinux.ENFORCING
+    try:
+        mode = selinux.security_getenforce()
+        if mode not in [selinux.ENFORCING, selinux.PERMISSIVE]:
+            raise ValueError("Unexpected value from"
+                             " security_getenforce(): %s" % mode)
+        return mode == selinux.ENFORCING
+    except NameError:
+        return None
 
 
 def docker_rpm():
