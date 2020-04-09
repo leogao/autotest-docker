@@ -412,7 +412,7 @@ class BuildSubSubtest(BuildBase, postprocessing, subtest.SubSubtest):
         with open(dockerfile_path, 'r') as dockerfile_old:
             dockerfile = dockerfile_old.read()
         dockerfile = from_regex.sub(with_str, dockerfile)
-        with open(dockerfile_path, 'w+b') as dockerfile_new:
+        with open(dockerfile_path, 'w') as dockerfile_new:
             dockerfile_new.write(dockerfile)
         file_name = os.path.basename(dockerfile_path)
         self.logdebug("Updated %s:", file_name)

@@ -24,7 +24,7 @@ class expose(BuildSubSubtest):
         self.sub_stuff['async_dkrcmd'] = async_dkrcmd
         async_dkrcmd.execute(read_fd)
         os.close(read_fd)
-        os.write(write_fd, '\necho "R""EADY"\n')
+        os.write(write_fd, b'\necho "R""EADY"\n')
         async_dkrcmd.wait_for_ready()
         return name
 
@@ -42,7 +42,7 @@ class expose(BuildSubSubtest):
         portstr = self.container_ports(name)
         component = PortContainer.split_to_component(portstr)
         self.sub_stuff['port_cntnr'] = PortContainer(*component)
-        os.write(write_fd, 'exit\n')
+        os.write(write_fd, b'exit\n')
         dc = self.sub_stuff['dc']
         dc.wait_by_name(name)
         dc.remove_by_name(name)
