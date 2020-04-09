@@ -77,7 +77,7 @@ class run_cgroup_parent_base(SubSubtest):
         OutputGood(cmdresult, ignore_error=(expected_status != 0),
                    skip=['nonprintables_check'])
 
-        self.sub_stuff["cid"] = self._read_cid()
+        self.sub_stuff["cid"] = self._read_cid().decode()
         path_exp = self.sub_stuff['expected_path'].format(**self.sub_stuff)
         stderr_exp = self.sub_stuff['expected_stderr'].format(**self.sub_stuff)
 
