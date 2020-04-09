@@ -126,13 +126,13 @@ class simple_base(attach_base):
         self.logdebug("Before input should be ignored: %s", dkrcmd.cmdresult)
 
         # This input should be ignored.
-        os.write(self.sub_stuff["run_in_pipe_w"],
-                 self.config['interactive_cmd_run'] + "\n")
+        msg = self.config['interactive_cmd_run'] + "\n"
+        os.write(self.sub_stuff["run_in_pipe_w"], msg.encode())
 
         self.logdebug("Before input should be passed: %s", dkrcmd.cmdresult)
         # This input should be passed to container.
-        os.write(attach_in_pipe_w,
-                 self.config['interactive_cmd_attach'] + "\n")
+        msg = self.config['interactive_cmd_attach'] + "\n"
+        os.write(attach_in_pipe_w, msg.encode())
 
         self.wait_interactive_cmd()
         self.logdebug("After input was passsed: %s", dkrcmd.cmdresult)
