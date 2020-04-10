@@ -78,7 +78,7 @@ class exec_base(SubSubtest):
         self.sub_stuff['containers'].append(self.sub_stuff['run_name'])
         os.close(reader)  # not needed anymore
         self.sub_stuff['dkrcmd'] = dkrcmd
-        os.write(writer, 'echo "Started"\n')
+        os.write(writer, b'echo "Started"\n')
         if not wait_for_output(lambda: dkrcmd.stdout, "Started"):
             raise DockerTestFail("Unable to start base container:\n %s" %
                                  (dkrcmd))
@@ -101,7 +101,7 @@ class exec_base(SubSubtest):
 
     def postprocess(self):
         super(exec_base, self).postprocess()  # Prints out basic info
-        os.write(self.sub_stuff['dkrcmd_stdin'], 'exit\t')
+        os.write(self.sub_stuff['dkrcmd_stdin'], b'exit\t')
         time.sleep(1)
         mustpass(DockerCmd(self, 'kill',
                            [self.sub_stuff['run_name']]).execute())
