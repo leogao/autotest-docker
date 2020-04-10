@@ -62,7 +62,7 @@ class psa(subtest.Subtest):
         """
         cidfile = self.stuff['cidfile']
         if os.path.isfile(cidfile):
-            cid = open(cidfile, 'rb').read().strip()
+            cid = open(cidfile, 'r').read().strip()
             if len(cid) >= 12:
                 self.stuff['container_id'] = cid
                 return True
