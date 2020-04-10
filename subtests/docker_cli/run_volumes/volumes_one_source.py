@@ -58,7 +58,7 @@ class volumes_one_source(volumes_base):
         cntr_results = list(zip(self.sub_stuff['names'], cntr_md5s))
         for name, result in cntr_results:
             file_path = self.tmpdir + "/" + name
-            with open(file_path, 'r') as content:
+            with open(file_path, 'rb') as content:
                 data = content.read()
                 # uncommenting these print lines will show that the files are
                 # being written at the same time
