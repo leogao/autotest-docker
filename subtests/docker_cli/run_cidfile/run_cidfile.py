@@ -57,7 +57,7 @@ class InteractiveAsyncDockerCmd(dockercmd.AsyncDockerCmd):
         :param data: Data to be send
         :return: Number of written data
         """
-        return os.write(self._stdin, data)
+        return os.write(self._stdin, data.encode())
 
     def close(self):
         """
