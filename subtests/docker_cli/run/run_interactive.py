@@ -18,7 +18,7 @@ class run_interactive(run_base):
         os.close(self.sub_stuff['stdin'])
         # Assume it's line-buffered
         secret_sauce = '%s\n' % self.config['secret_sauce']
-        os.write(self.sub_stuff['stdin_write'], secret_sauce)
+        os.write(self.sub_stuff['stdin_write'], secret_sauce.encode())
         # Should cause container to exit
         os.close(self.sub_stuff['stdin_write'])
         self.sub_stuff['dkrcmd'].wait()
