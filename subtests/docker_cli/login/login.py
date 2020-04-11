@@ -42,6 +42,12 @@ class login_base(SubSubtest):
     def initialize(self):
         super(login_base, self).initialize()
 
+        docker_registry_host = self.config['docker_registry_host']
+        push_image = self.config['push_image']
+        self.pull_image = docker_registry_host + '/' + push_image
+        dc = DockerCmd(self, 'pull', [self.pull_image])
+        mustpass(dc.execute())
+
         # We need to create cert and htpasswd files for bind-mounting in
         # the registry container; do so in a safe temporary workdir.
         os.chdir(self.tmpdir)
@@ -198,16 +204,12 @@ class login_base(SubSubtest):
         Run docker tag, then docker push against our local registry.
         Tag should always succeed but make no assumptions about push.
         """
-        push_image = self.config['push_image']
-        dc = DockerCmd(self, 'pull', [push_image])
-        mustpass(dc.execute())
-        self.sub_stuff['my_images'] += [push_image]
-
+        self.sub_stuff['my_images'] += [self.pull_image]
         self.sub_stuff['img_name'] = img_name
         self.sub_stuff['tag_name'] = tag_name
         pushed_name = ('{server}/{img_name}:{tag_name}'
                        .format(**self.sub_stuff))
-        dc = DockerCmd(self, 'tag', [push_image, pushed_name])
+        dc = DockerCmd(self, 'tag', [self.pull_image, pushed_name])
         mustpass(dc.execute())
         self.sub_stuff['my_images'] += [pushed_name]
 
