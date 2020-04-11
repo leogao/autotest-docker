@@ -21,7 +21,7 @@ Prerequisites
    structure.
 """
 
-from io import StringIO
+from io import BytesIO
 import pickle
 import hashlib
 import inspect
@@ -101,7 +101,7 @@ class simple(CpBase):
                                     self.sub_stuff['copied_path'])
 
     def verify_files_identical(self, docker_file, copied_file):
-        with open(copied_file, 'r') as copied_content:
+        with open(copied_file, 'rb') as copied_content:
             data = copied_content.read()
         copied_md5 = hashlib.md5(data).hexdigest()
         self.failif_ne(self.sub_stuff['cpfile_md5'], copied_md5,
@@ -159,7 +159,7 @@ class every_last(CpBase):
         nfdc.quiet = True
         self.logdebug("Executing %s", nfdc.command)
         mustpass(nfdc.execute())
-        return pickle.load(StringIO(nfdc.stdout))
+        return pickle.load(BytesIO(nfdc.stdout.encode('latin-1')))
 
     def initialize(self):
         super(every_last, self).initialize()
@@ -238,7 +238,8 @@ class volume_mount(CpBase):
         c1 = DockerContainers(self).get_unique_name(prefix='c1_')
         # Path is not configurable because it's hardcoded in the tarballs
         vol_binding = vol + ':/.imagebuilder-transient-mount'
-        subargs = ['--name', c1, '-v', vol_binding, 'busybox']
+        self.base_image = self.config['base_image']
+        subargs = ['--name', c1, '-v', vol_binding, self.base_image]
         mustpass(DockerCmd(self, 'create', subargs).execute())
         self.sub_stuff['container1'] = c1
         for ab in ['a', 'b']:
@@ -258,7 +259,7 @@ class volume_mount(CpBase):
         subargs = ['--name', c2,
                    '-v', mp + '/0:/mountdir:Z',
                    '-v', mp + '/1:/mountfile:Z',
-                   'busybox', 'cat', '/mountfile']
+                   self.base_image, 'cat', '/mountfile']
         mustpass(DockerCmd(self, 'create', subargs).execute())
         self.sub_stuff['container2'] = c2
 
@@ -284,7 +285,7 @@ class volume_mount(CpBase):
             vol = self.sub_stuff['volume_name']
             DockerCmd(self, 'volume', ['rm', vol]).execute()
 
-        self.stuff['di'].clean_all(['busybox'])
+        self.stuff['di'].clean_all([self.base_image])
 
 
 class cp_symlink(CpBase):
@@ -307,7 +308,7 @@ class cp_symlink(CpBase):
         self.sub_stuff['xfer_content'] = utils.generate_random_string(30)
 
         xfer_file_local = os.path.join(self.tmpdir, self.sub_stuff['xfer_file'])
-        with open(xfer_file_local, 'wb') as xfer_file_fh:
+        with open(xfer_file_local, 'w') as xfer_file_fh:
             xfer_file_fh.write(self.sub_stuff['xfer_content'])
         self.sub_stuff['xfer_file_local'] = xfer_file_local
 
