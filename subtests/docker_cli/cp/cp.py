@@ -238,7 +238,7 @@ class volume_mount(CpBase):
         c1 = DockerContainers(self).get_unique_name(prefix='c1_')
         # Path is not configurable because it's hardcoded in the tarballs
         vol_binding = vol + ':/.imagebuilder-transient-mount'
-        self.base_image = self.config['base_image']
+        self.base_image = self.config['docker_registry_host'] + '/' + self.config['base_image']
         subargs = ['--name', c1, '-v', vol_binding, self.base_image]
         mustpass(DockerCmd(self, 'create', subargs).execute())
         self.sub_stuff['container1'] = c1
